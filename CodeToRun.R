@@ -1,11 +1,14 @@
 # ADD NECESSARY PACKAGES
-
+#install.packages("renv") # if not already installed, install renv from CRAN
+renv::activate() 
+renv::restore() # this should prompt you to install the various packages required for the study
 library(CDMConnector)
 library(DBI)
 library(log4r)
 library(dplyr)
 library(dbplyr)
 library(here)
+library(tidyr)
 
 # database metadata and connection details -----
 # The name/ acronym for the database
