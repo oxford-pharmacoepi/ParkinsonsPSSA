@@ -8,6 +8,47 @@ tableCleaning <- function (table, study_time){
     select(-gap)
 }
 
+### Intake two IDs and generate two cohort sets using capR
+generatePSSACohortDefinitions <- function (DrugId){
+  cohort(
+    entry = entry(drug(cs(descendants(DrugId))),
+                  primaryCriteriaLimit = "First"),
+    exit = exit(endStrategy = fixedExit(index = "startDate", offsetDays = 0L)))
+}
+
+generatePSSACohortDefinitions(1309944)
+generatePSSACohortDefinitions(1501700)
+
+### Generate cohorts
+generatePSSACohort <- function (indexDrugCohort, markerDrugCohort) {
+  path <- file.path(tempdir(), "pssa_cohorts")
+  dir.create(path)
+  pssa <- readCohortSet(path = path)
+  cdm <- generateCohortSet(
+    cdm,
+    pssa,
+    name = "pssa",
+    overwrite = TRUE
+  )
+}
+
+### Calculate asr
+asr <- function (indexDrugId, markerDrugId, study_time){
+  generatePSSACohortDefinitions(indexDrugId, markerDrugId)
+  generatePSSACohort(indexDrugCohort, markerDrugCohort)
+  tablePSSA <- cdm[["pssa"]] %>% 
+    select(cohort_definition_id, subject_id, cohort_start_date) %>%
+    pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>%
+    collect()
+  
+  colnames(tablePSSA) <- c("subject_id", "dateIndexDrug", "dateMarkerDrug")
+  
+  tablePSSA <- tableCleaning(tablePSSA, study_time)
+  
+  library(seqsym)
+  
+  asr(summ_dat(tablePSSA, patid = "subject_id", dateA = "dateIndexDrug", dateB = "dateMarkerDrug"))
+}
 # ### Credit to Ty - checking if the dataframe has the required columns
 # colChecks <- function(df, cols) {
 #   
