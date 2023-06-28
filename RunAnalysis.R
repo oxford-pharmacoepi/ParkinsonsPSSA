@@ -21,3 +21,13 @@ cdm <- generateCohortSet(
   overwrite = TRUE
 )
 
+table <- cdm[[cohortTableNameDrug]] %>% 
+  select(cohort_definition_id, subject_id, cohort_start_date) %>%
+  pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>%
+  collect()
+
+colnames(table) <- c("subject_id", "dateIndexDrug", "dateMarkerDrug")
+
+table <- tableCleaning(table, 730)
+
+asr(summ_dat(table, patid = "subject_id", dateA = "dateIndexDrug", dateB = "dateMarkerDrug"))
