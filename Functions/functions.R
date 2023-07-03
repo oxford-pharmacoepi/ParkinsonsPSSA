@@ -16,22 +16,6 @@ generatePSSACohortDefinitions <- function (DrugId){
     exit = exit(endStrategy = fixedExit(index = "startDate", offsetDays = 0L)))
 }
 
-generatePSSACohortDefinitions(1309944)
-generatePSSACohortDefinitions(1501700)
-
-### Generate cohorts
-generatePSSACohort <- function (indexDrugCohort, markerDrugCohort) {
-  path <- file.path(tempdir(), "pssa_cohorts")
-  dir.create(path)
-  pssa <- readCohortSet(path = path)
-  cdm <- generateCohortSet(
-    cdm,
-    pssa,
-    name = "pssa",
-    overwrite = TRUE
-  )
-}
-
 ### Calculate asr
 asr <- function (indexDrugId, markerDrugId, study_time){
   generatePSSACohortDefinitions(indexDrugId, markerDrugId)

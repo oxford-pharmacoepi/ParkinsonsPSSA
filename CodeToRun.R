@@ -9,6 +9,7 @@ library(dplyr)
 library(dbplyr)
 library(here)
 library(tidyr)
+library(CodelistGenerator)
 
 # database metadata and connection details -----
 # The name/ acronym for the database
