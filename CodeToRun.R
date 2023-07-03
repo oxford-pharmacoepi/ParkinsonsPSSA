@@ -8,8 +8,11 @@ library(log4r)
 library(dplyr)
 library(dbplyr)
 library(here)
+library(Capr)
+library(devtools)
 library(tidyr)
 library(CodelistGenerator)
+library(DrugUtilisation)
 
 # database metadata and connection details -----
 # The name/ acronym for the database
