@@ -1,14 +1,18 @@
-### Intake a table with three columns, patient id, dateIndexDrug and dateMarkerDrug, study_time is in days
-tableCleaning <- function (table, study_time){
-  table %>% 
+### Input a cdm table and a study period and output a cleaned version of table, so that it can be used in asr
+tableCleaning <- function(table, study_time){
+  table %>%
+    select(cohort_definition_id, subject_id, cohort_start_date) %>%
+    pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
+    rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
     mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
     dplyr::filter(!is.na(gap)) %>%
     dplyr::filter(!gap==0) %>%
     dplyr::filter(-study_time<= gap & gap <= study_time) %>%
-    select(-gap)
+    select(-gap) %>%
+    collect()
 }
 
-### Intake two IDs and generate two cohort sets using capR
+### Intake two IDs and generate two cohort sets using capr
 generatePSSACohortDefinitions <- function (DrugId){
   cohort(
     entry = entry(drug(cs(descendants(DrugId))),
@@ -16,23 +20,6 @@ generatePSSACohortDefinitions <- function (DrugId){
     exit = exit(endStrategy = fixedExit(index = "startDate", offsetDays = 0L)))
 }
 
-### Calculate asr
-asr <- function (indexDrugId, markerDrugId, study_time){
-  generatePSSACohortDefinitions(indexDrugId, markerDrugId)
-  generatePSSACohort(indexDrugCohort, markerDrugCohort)
-  tablePSSA <- cdm[["pssa"]] %>% 
-    select(cohort_definition_id, subject_id, cohort_start_date) %>%
-    pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>%
-    collect()
-  
-  colnames(tablePSSA) <- c("subject_id", "dateIndexDrug", "dateMarkerDrug")
-  
-  tablePSSA <- tableCleaning(tablePSSA, study_time)
-  
-  library(seqsym)
-  
-  asr(summ_dat(tablePSSA, patid = "subject_id", dateA = "dateIndexDrug", dateB = "dateMarkerDrug"))
-}
 # ### Credit to Ty - checking if the dataframe has the required columns
 # colChecks <- function(df, cols) {
 #   
