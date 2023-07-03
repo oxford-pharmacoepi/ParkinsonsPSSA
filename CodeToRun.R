@@ -13,6 +13,7 @@ library(devtools)
 library(tidyr)
 library(CodelistGenerator)
 library(DrugUtilisation)
+library(lubridate)
 
 # database metadata and connection details -----
 # The name/ acronym for the database

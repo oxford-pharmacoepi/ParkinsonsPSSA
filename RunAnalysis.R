@@ -83,4 +83,4 @@ cdm <- generateDrugUtilisationCohortSet(
 )
 
 table_amiodarone_levothyroxine <- tableCleaning(cdm[[table_name_pssa]], 730)
-asr(summ_dat(table_amiodarone_levothyroxine, patid = "subject_id", dateA = "dateIndexDrug", dateB = "dateMarkerDrug"))
+csr(summ_dat(table_amiodarone_levothyroxine, patid = "subject_id", dateA = "dateIndexDrug", dateB = "dateMarkerDrug"))
