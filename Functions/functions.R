@@ -104,7 +104,7 @@ asr <- function(summaryTable) {
 ### CSR
 csr <- function(summaryTable) {
   
-  check_cols(summaryTable, c("days_first", "index_first", "marker_first"))
+  colChecks(summaryTable, c("days_first", "index_first", "marker_first"))
   
   n_index_before_marker <- summaryTable %>% pull(index_first) %>% sum(.)
   n_marker_before_index <- summaryTable %>% pull(marker_first) %>% sum(.)
@@ -116,7 +116,7 @@ csr <- function(summaryTable) {
 }
 
 ### NSR
-nsr <- function(summaryTable, restriction = 548) {
+nsr <- function(summaryTable, restriction = 730) {
   
   check_cols(summaryTable, c("days_first", "marker_first", "index_first"))
   
