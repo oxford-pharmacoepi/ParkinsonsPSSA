@@ -137,6 +137,81 @@ cdm <- generateDrugUtilisationCohortSet(
 )
 
 csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+# 8. SGLT2 inhibitors to antifungal 
+indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Sodium-glucose co-transporter 2 (SGLT2) inhibitors")
+markerId <- getATCCodes(cdm, level = c("ATC 2nd"), name = "ANTIFUNGALS FOR DERMATOLOGICAL USE")
+
+table_name_pssa <- "pssa_sglt2_antifungal"
+
+cdm <- generateDrugUtilisationCohortSet(
+  cdm = cdm,
+  name = table_name_pssa,
+  conceptSetList = c(indexId, markerId),
+  summariseMode = "FirstEra"
+)
+
+csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+# 9. SGLT2 inhibitors to antifungal 
+indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Sodium-glucose co-transporter 2 (SGLT2) inhibitors")
+markerId <- getATCCodes(cdm, level = c("ATC 2nd"), name = "ANTIFUNGALS FOR DERMATOLOGICAL USE")
+
+table_name_pssa <- "pssa_sglt2_antifungal"
+
+cdm <- generateDrugUtilisationCohortSet(
+  cdm = cdm,
+  name = table_name_pssa,
+  conceptSetList = c(indexId, markerId),
+  summariseMode = "FirstEra"
+)
+
+csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+# 10. Statins to antibiotics
+indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "HMG CoA reductase inhibitors")
+markerId <- getATCCodes(cdm, level = c("ATC 2nd"), name = "ANTIBACTERIALS FOR SYSTEMIC USE")
+
+table_name_pssa <- "pssa_statins_antibiotics"
+
+cdm <- generateDrugUtilisationCohortSet(
+  cdm = cdm,
+  name = table_name_pssa,
+  conceptSetList = c(indexId, markerId),
+  summariseMode = "FirstEra"
+)
+
+csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+# 11. Statins to antidepressants
+indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "HMG CoA reductase inhibitors")
+markerId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "ANTIDEPRESSANTS")
+
+table_name_pssa <- "pssa_statins_antidepressants"
+
+cdm <- generateDrugUtilisationCohortSet(
+  cdm = cdm,
+  name = table_name_pssa,
+  conceptSetList = c(indexId, markerId),
+  summariseMode = "FirstEra"
+)
+
+csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+# 11. Statins to quinine
+indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "HMG CoA reductase inhibitors")
+markerId <- getDrugIngredientCodes(cdm, "quinine")
+
+table_name_pssa <- "pssa_statins_quinine"
+
+cdm <- generateDrugUtilisationCohortSet(
+  cdm = cdm,
+  name = table_name_pssa,
+  conceptSetList = c(indexId, markerId),
+  summariseMode = "FirstEra"
+)
+
+csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
 ################################################################################################ 
 #                                                                                              #
 #                                       Negative control                                       #
