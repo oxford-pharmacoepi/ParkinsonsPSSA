@@ -55,7 +55,7 @@ summaryTable <- function(table, subject_id = "subject_id", dateIndexDrug = "date
   column_names[column_names == dateMarkerDrug] <- "dateMarkerDrug"
   colnames(table) <- column_names
   
-  # creating order
+  # creating order, orderBA is TRUE if index is AFTER marker
   table <-
     table %>%
     dplyr::filter((!is.na(dateIndexDrug)) & (!is.na(dateMarkerDrug))) %>%
@@ -68,7 +68,7 @@ summaryTable <- function(table, subject_id = "subject_id", dateIndexDrug = "date
   table <-
     table %>%
     mutate(
-      date_first = lubridate::as_date(ifelse(orderBA, dateMarkerDrug, dateIndexDrug)),
+      date_first = lubridate::as_date(ifelse(orderBA, dateMarkerDrug, dateIndexDrug)), # setting which date is first and which is second
       date_second = lubridate::as_date(ifelse(orderBA, dateIndexDrug, dateMarkerDrug)),
       days_first = as.integer((date_start %--% date_first) / lubridate::days(1)), # gap between the first drug of a person and the first drug of the whole population
       days_second = as.integer((date_first %--% date_second) / lubridate::days(1)) # gap betwen two drugs of a person
@@ -84,7 +84,12 @@ summaryTable <- function(table, subject_id = "subject_id", dateIndexDrug = "date
       days_first_ch_format = sprintf(ch_format, days_first) # make a column with days_first having the same number of digits - Why?
     ) %>%
     arrange(days_first)
-  
+ 
+  ### final output, a dataframe with four columns, days_first_ch_format, days_first, marker_first and index_first.
+  # days_first_ch_format: days_first in ch format
+  # days_first: gap between the first drug date of an individual to the first drug date of everyone
+  # marker_first: for a given days_first, how many were marker first
+  # index_first: for a given days_first, how many were index first
   dat <-
     table %>%
     group_by(days_first_ch_format, days_first) %>%

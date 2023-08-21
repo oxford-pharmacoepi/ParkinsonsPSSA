@@ -66,14 +66,14 @@ asr(summ_dat(table, patid = "subject_id", dateA = "dateIndexDrug", dateB = "date
 # 1. Generate the required drugID
 cdm <- CDMConnector::cdm_from_con(
   con = db,
-  cdm_schema = cdm_database_schema,
+  cdm_schema = "public_100k",
   write_schema = results_database_schema
 )
 
 indexId <- getDrugIngredientCodes(cdm, "amiodarone")
 markerId <- getDrugIngredientCodes(cdm, "levothyroxine")
 
-table_name_pssa <- "pssa_cohorts"
+table_name_pssa <- "pssa_amiodarone_levothyroxine"
 
 cdm <- generateDrugUtilisationCohortSet(
   cdm = cdm,
@@ -82,5 +82,6 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-table_amiodarone_levothyroxine <- tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)
-csr(summ_dat(table_amiodarone_levothyroxine, patid = "subject_id", dateA = "dateIndexDrug", dateB = "dateMarkerDrug"))
+csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+asr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
