@@ -39,6 +39,24 @@ colChecks <- function(df, cols) {
   }
 }
 
+# CI
+getConfidenceInterval <- function(table, level = 0.025){
+  colChecks(table, c("marker_first", "index_first"))
+  
+  counts <- tibble(
+    first = table %>% pull(index_first) %>% sum(.),
+    last = table %>% pull(marker_first) %>% sum(.)
+  )
+  
+  counts$lowerCI <- qbeta(level, counts$first + 0.5, counts$last + 0.5)
+  counts$upperCI <- qbeta(1-level, counts$first + 0.5, counts$last + 0.5)
+  
+  counts$lowerCI <- counts$lowerCI/(1-counts$lowerCI)
+  counts$upperCI <- counts$upperCI/(1-counts$upperCI)
+  
+  return(counts)
+}
+
 ### A summary table required to compute asr, csr and nsr
 # Basically, it takes in patients drug history table, the one produced after using the tableCleaning function
 # and produces a summary table with one column indicating how many days it has been since the the very first drug
@@ -100,19 +118,19 @@ summaryTable <- function(table, subject_id = "subject_id", dateIndexDrug = "date
 }
 
 ### ASR
-adjustedSequenceRatio <- function(summaryTable) {
+adjustedSequenceRatio <- function(table) {
   
-  return(crudeSequenceRatio(summaryTable) / nullSequenceRatio(summaryTable))
+  return(crudeSequenceRatio(table) / nullSequenceRatio(table))
   
 }
 
 ### CSR
-crudeSequenceRatio <- function(summaryTable) {
+crudeSequenceRatio <- function(table) {
   
-  colChecks(summaryTable, c("days_first", "index_first", "marker_first"))
+  colChecks(table, c("days_first", "index_first", "marker_first"))
   
-  n_index_before_marker <- summaryTable %>% pull(index_first) %>% sum(.) #how many occasions are there that index was taken before marker
-  n_marker_before_index <- summaryTable %>% pull(marker_first) %>% sum(.) #how many occasions are there that index was taken after marker
+  n_index_before_marker <- table %>% pull(index_first) %>% sum(.) #how many occasions are there that index was taken before marker
+  n_marker_before_index <- table %>% pull(marker_first) %>% sum(.) #how many occasions are there that index was taken after marker
   
   crudeSequenceRatio <- n_index_before_marker / n_marker_before_index
   
@@ -121,20 +139,20 @@ crudeSequenceRatio <- function(summaryTable) {
 }
 
 ### NSR
-nullSequenceRatio <- function(summaryTable, restriction = 548) {
+nullSequenceRatio <- function(table, restriction = 548) {
   
-  colChecks(summaryTable, c("days_first", "marker_first", "index_first"))
+  colChecks(table, c("days_first", "marker_first", "index_first"))
   
-  n_index_before_marker <- summaryTable %>% pull(index_first) %>% sum(.)
-  n_marker_before_index <- summaryTable %>% pull(marker_first) %>% sum(.)
+  n_index_before_marker <- table %>% pull(index_first) %>% sum(.)
+  n_marker_before_index <- table %>% pull(marker_first) %>% sum(.)
   
   numer <- 0
   denom <- 0
   
   if (is.finite(restriction)) {
     
-    summaryTable <-
-      summaryTable %>%
+    table <-
+      table %>%
       mutate(
         marker_cumsum_fwd = deltaCumulativeSum(marker_first, days_first, restriction, backwards = FALSE),
         marker_cumsum_bwd = deltaCumulativeSum(marker_first, days_first, restriction, backwards = TRUE),
@@ -142,13 +160,13 @@ nullSequenceRatio <- function(summaryTable, restriction = 548) {
         denominator = index_first * (marker_cumsum_bwd + marker_cumsum_fwd - marker_first),
       )
     
-    numer <- summaryTable %>% pull(numerator) %>% sum(.)
-    denom <- summaryTable %>% pull(denominator) %>% sum(.)
+    numer <- table %>% pull(numerator) %>% sum(.)
+    denom <- table %>% pull(denominator) %>% sum(.)
     
   } else {
     
     numer <-
-      summaryTable %>%
+      table %>%
       mutate(
         marker_cumsum = n_marker_before_index - cumsum(marker_first),
         numerator = index_first * marker_cumsum
@@ -261,3 +279,4 @@ deltaCumulativeSum <- function(y, t, delta, backwards = TRUE) {
   }
   
 }
+
