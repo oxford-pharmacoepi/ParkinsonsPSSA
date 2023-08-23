@@ -13,13 +13,13 @@ tableCleaning <- function(table, study_time){
     collect()
 }
 
-### Intake two IDs and generate two cohort sets using capr
-generatePSSACohortDefinitions <- function (DrugId){
-  cohort(
-    entry = entry(drug(cs(descendants(DrugId))),
-                  primaryCriteriaLimit = "First"),
-    exit = exit(endStrategy = fixedExit(index = "startDate", offsetDays = 0L)))
-}
+# ### Intake two IDs and generate two cohort sets using capr
+# generatePSSACohortDefinitions <- function (DrugId){
+#   cohort(
+#     entry = entry(drug(cs(descendants(DrugId))),
+#                   primaryCriteriaLimit = "First"),
+#     exit = exit(endStrategy = fixedExit(index = "startDate", offsetDays = 0L)))
+# }
 
 ### Credit to Ty - checking if the dataframe has the required columns
 colChecks <- function(df, cols) {
@@ -100,28 +100,28 @@ summaryTable <- function(table, subject_id = "subject_id", dateIndexDrug = "date
 }
 
 ### ASR
-asr <- function(summaryTable) {
+adjustedSequenceRatio <- function(summaryTable) {
   
-  return(csr(summaryTable) / nsr(summaryTable))
+  return(crudeSequenceRatio(summaryTable) / nullSequenceRatio(summaryTable))
   
 }
 
 ### CSR
-csr <- function(summaryTable) {
+crudeSequenceRatio <- function(summaryTable) {
   
   colChecks(summaryTable, c("days_first", "index_first", "marker_first"))
   
-  n_index_before_marker <- summaryTable %>% pull(index_first) %>% sum(.)
-  n_marker_before_index <- summaryTable %>% pull(marker_first) %>% sum(.)
+  n_index_before_marker <- summaryTable %>% pull(index_first) %>% sum(.) #how many occasions are there that index was taken before marker
+  n_marker_before_index <- summaryTable %>% pull(marker_first) %>% sum(.) #how many occasions are there that index was taken after marker
   
-  csr <- n_index_before_marker / n_marker_before_index
+  crudeSequenceRatio <- n_index_before_marker / n_marker_before_index
   
-  return(csr)
+  return(crudeSequenceRatio)
   
 }
 
 ### NSR
-nsr <- function(summaryTable, restriction = 730) {
+nullSequenceRatio <- function(summaryTable, restriction = 730) {
   
   check_cols(summaryTable, c("days_first", "marker_first", "index_first"))
   
@@ -168,8 +168,63 @@ nsr <- function(summaryTable, restriction = 730) {
   
   a <- numer / denom
   
-  nsr <- a / (1 - a)
+  nullSequenceRatio <- a / (1 - a)
   
-  return(nsr)
+  return(nullSequenceRatio)
+  
+}
+### For each i in 1 through length(x), it finds the minimum j such that x[i]-x[j]<=delta. 
+# x needs to be non decreasing. 
+# i.e., y[i] = min{j: x[i]-x[j]<=delta}
+indexDeltaBackward <- function(x, delta) {
+
+  n <- length(x)
+  y <- rep(0, n) #create y which is the same size of x
+  
+  y[1] <- 1
+
+  j <- 1
+  i <- 2
+
+  while (i <= n) {
+
+    if ((x[i] - x[j]) <= delta) {
+      y[i] <- j
+      i <- i + 1
+    } else {
+      j <- j + 1
+    }
+
+  }
+
+  return(y)
+
+}
+
+### For each i in 1 through length(x), it finds the max j such that x[j]-x[i]<=delta. 
+# x needs to be non decreasing.
+# i.e., y[i] = max{j: x[j]-x[i]<=delta}
+indexDeltaForward <- function(x, delta) {
+  
+  n <- length(x)
+  y <- rep(0, n)
+  
+  j <- 2
+  i <- 1
+  
+  while (j <= n) {
+    
+    if ((x[j] - x[i]) > delta) {
+      y[i] <- j - 1
+      i <- i + 1
+    } else {
+      j <- j + 1
+    }
+    
+  }
+  
+  y[i:n] <- n
+  
+  return(y)
   
 }
