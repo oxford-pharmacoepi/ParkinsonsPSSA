@@ -5,6 +5,12 @@ cdm <- CDMConnector::cdm_from_con(
   write_schema = results_database_schema
 )
 
+### creating plots folder
+plotsFolder <- here(output_folder, "plots")
+if (!dir.exists(plotsFolder)) {
+  dir.create(plotsFolder)
+}
+
 ################################################################################################ 
 #                                                                                              #
 #                                       Positive control                                       #
@@ -294,7 +300,6 @@ results <- results %>%
                          csr = csr, 
                          asr = asr), counts))
 
-
 # 2. levothyroxine to allopurinol
 indexId <- getDrugIngredientCodes(cdm, "levothyroxine")
 markerId <- getDrugIngredientCodes(cdm, "allopurinol")
@@ -315,7 +320,6 @@ results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
                          csr = csr, 
                          asr = asr), counts))
-
 
 # 3. Rosuvastatin to levothyroxine
 indexId <- getDrugIngredientCodes(cdm, "rosuvastatin")
@@ -381,3 +385,45 @@ results <- results %>%
                          asr = asr), counts))
 
 write.csv(results, "results.csv")
+
+#### plots results
+pos_results <- results[1:9,] %>% 
+  mutate(across(c('name'), substr, 6, nchar(name))) %>%
+  mutate()
+
+pos_res_plots <- ggplot(pos_results, aes(name, asr)) + geom_point(shape = 4, color="darkred", size=3) + 
+  geom_errorbar(aes(ymin = lowerCI, ymax = upperCI)) +
+  ggtitle("ASR and confidence intervals for different sequences") +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        panel.background = element_blank() ,
+        axis.line = element_line(colour = "black", size = 0.6) ,
+        panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
+        legend.key = element_rect(fill = "transparent", colour = "transparent")) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Sequences") + ylab("Adjusted Sequence Ratio") + geom_hline(yintercept=1, linetype="dashed", color = "red")
+
+pdf(here(plotsFolder, "pos_results.pdf"),
+    width = 18, height = 10)
+print(pos_res_plots, newpage = FALSE)
+dev.off()
+
+
+negative_results <- results[10:14,] %>% 
+  mutate(across(c('name'), substr, 6, nchar(name))) %>%
+  mutate()
+
+negative_res_plots <- ggplot(negative_results, aes(name, asr)) + geom_point(shape = 4, color="darkred", size=3) + 
+  geom_errorbar(aes(ymin = lowerCI, ymax = upperCI)) +
+  ggtitle("ASR and confidence intervals for different sequences") +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        panel.background = element_blank() ,
+        axis.line = element_line(colour = "black", size = 0.6) ,
+        panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
+        legend.key = element_rect(fill = "transparent", colour = "transparent")) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Sequences") + ylab("Adjusted Sequence Ratio") + geom_hline(yintercept=1, linetype="dashed", color = "red")
+
+pdf(here(plotsFolder, "negative_results.pdf"),
+    width = 18, height = 10)
+print(negative_res_plots, newpage = FALSE)
+dev.off()
