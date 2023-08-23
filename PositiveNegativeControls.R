@@ -23,7 +23,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+results <- tibble(name = table_name_pssa, 
+                  csr = csr, 
+                  asr = asr)
 
 # 2. Direct factor Xa inhibitors to antidepressants
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Direct factor Xa inhibitors")
@@ -38,7 +42,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                  csr = csr, 
+                  asr = asr))
 
 # 3. CCB to Diuretics
 indexId <- getATCCodes(cdm, level = c("ATC 2nd"), name = "CALCIUM CHANNEL BLOCKERS")
@@ -53,7 +63,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 
 # 4. antipsychotics to antiparkinson drugs
 indexId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "ANTIPSYCHOTICS")
@@ -68,7 +84,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 
 # 5. Benzodiazepine to Cholinesterase Inhibitor or memantine (complication)
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Benzodiazepine derivatives")
@@ -95,7 +117,8 @@ updated_pssa_table <- updated_pssa_table %>%
   arrange(cohort_start_date, .by_group =T) %>%
   filter(row_number()==1)
   
-csr(summaryTable(tableCleaning(updated_pssa_table, 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
 
 # 6. Benzodiazepine to antipsychotics
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Benzodiazepine derivatives")
@@ -121,7 +144,13 @@ updated_pssa_table <- updated_pssa_table %>%
   arrange(cohort_start_date, .by_group =T) %>%
   filter(row_number()==1)
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 
 # 7. Rosiglitazone to furosemide
 indexId <- getDrugIngredientCodes(cdm, name = "rosiglitazone")
@@ -136,7 +165,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 
 # 8. SGLT2 inhibitors to antifungal 
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Sodium-glucose co-transporter 2 (SGLT2) inhibitors")
@@ -151,7 +186,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 
 # 9. SGLT2 inhibitors to antifungal 
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Sodium-glucose co-transporter 2 (SGLT2) inhibitors")
@@ -166,7 +207,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 
 # 10. Statins to antibiotics
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "HMG CoA reductase inhibitors")
@@ -181,8 +228,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
 
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 # 11. Statins to antidepressants
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "HMG CoA reductase inhibitors")
 markerId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "ANTIDEPRESSANTS")
@@ -196,7 +248,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 
 # 11. Statins to quinine
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "HMG CoA reductase inhibitors")
@@ -211,7 +269,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 ################################################################################################ 
 #                                                                                              #
 #                                       Negative control                                       #
@@ -229,7 +293,14 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
+
 
 # 2. levothyroxine to allopurinol
 indexId <- getDrugIngredientCodes(cdm, "levothyroxine")
@@ -243,7 +314,14 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
+
 
 # 3. Rosuvastatin to levothyroxine
 indexId <- getDrugIngredientCodes(cdm, "rosuvastatin")
@@ -257,7 +335,13 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 
 # 4. levothyroxine to loop diuretics
 indexId <- getDrugIngredientCodes(cdm, "levothyroxine")
@@ -271,10 +355,17 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))
 
 
-# 4. ace-inhibitors to loop diuretics
+
+# 5. ace-inhibitors to loop diuretics
 indexId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "ACE INHIBITORS, PLAIN")
 markerId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "high-ceiling diuretics")
 table_name_pssa <- "pssa_ace_inhibitors_loop_diuretics"
@@ -286,4 +377,10 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+
+results <- results %>%
+  union_all(tibble(name = table_name_pssa, 
+                   csr = csr, 
+                   asr = asr))

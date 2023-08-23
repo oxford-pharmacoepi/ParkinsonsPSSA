@@ -14,6 +14,7 @@ library(tidyr)
 library(CodelistGenerator)
 library(DrugUtilisation)
 library(lubridate)
+library(CirceR) #remotes::install_github("ohdsi/CirceR")
 
 # database metadata and connection details -----
 # The name/ acronym for the database

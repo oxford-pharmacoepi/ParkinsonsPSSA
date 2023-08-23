@@ -121,9 +121,9 @@ crudeSequenceRatio <- function(summaryTable) {
 }
 
 ### NSR
-nullSequenceRatio <- function(summaryTable, restriction = 730) {
+nullSequenceRatio <- function(summaryTable, restriction = 548) {
   
-  check_cols(summaryTable, c("days_first", "marker_first", "index_first"))
+  colChecks(summaryTable, c("days_first", "marker_first", "index_first"))
   
   n_index_before_marker <- summaryTable %>% pull(index_first) %>% sum(.)
   n_marker_before_index <- summaryTable %>% pull(marker_first) %>% sum(.)
