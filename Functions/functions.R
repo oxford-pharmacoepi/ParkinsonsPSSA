@@ -13,6 +13,24 @@ tableCleaning <- function(table, study_time){
     collect()
 }
 
+# CI
+getConfidenceInterval <- function(table, level = 0.025){
+  colChecks(table, c("marker_first", "index_first"))
+  
+  counts <- tibble(
+    first = table %>% pull(index_first) %>% sum(.),
+    last = table %>% pull(marker_first) %>% sum(.)
+  )
+  
+  counts$lowerCI <- qbeta(level, counts$first + 0.5, counts$last + 0.5)
+  counts$upperCI <- qbeta(1-level, counts$first + 0.5, counts$last + 0.5)
+  
+  counts$lowerCI <- counts$lowerCI/(1-counts$lowerCI)
+  counts$upperCI <- counts$upperCI/(1-counts$upperCI)
+  
+  return(counts)
+}
+
 # ### Intake two IDs and generate two cohort sets using capr
 # generatePSSACohortDefinitions <- function (DrugId){
 #   cohort(
@@ -39,26 +57,7 @@ colChecks <- function(df, cols) {
   }
 }
 
-# CI
-getConfidenceInterval <- function(table, level = 0.025){
-  colChecks(table, c("marker_first", "index_first"))
-  
-  counts <- tibble(
-    first = table %>% pull(index_first) %>% sum(.),
-    last = table %>% pull(marker_first) %>% sum(.)
-  )
-  
-  counts$lowerCI <- qbeta(level, counts$first + 0.5, counts$last + 0.5)
-  counts$upperCI <- qbeta(1-level, counts$first + 0.5, counts$last + 0.5)
-  
-  counts$lowerCI <- counts$lowerCI/(1-counts$lowerCI)
-  counts$upperCI <- counts$upperCI/(1-counts$upperCI)
-  
-  return(counts)
-}
-
 ### A summary table required to compute asr, csr and nsr
-# Basically, it takes in patients drug history table, the one produced after using the tableCleaning function
 # and produces a summary table with one column indicating how many days it has been since the the very first drug
 # and the number of cases where the marker was prescribed first and the index was prescribed first.
 
