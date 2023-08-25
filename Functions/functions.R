@@ -39,7 +39,7 @@ getHistogram <- function (table, bins = 48){
     mutate(order = ifelse(dateMarkerDrug>dateIndexDrug, "Marker First", "Index First"))
   
   p <- ggplot(prep, aes(x=gap, color=order, fill=order)) + 
-    geom_histogram(bins = 48) +
+    geom_histogram(bins = bins) +
     geom_vline(xintercept = 0, linewidth = 2, color = "purple") +
     labs(title = paste0("Time difference between the initiation of index and mark drugs"))+
     theme(axis.text.x = element_text(angle = 45, hjust=1),

@@ -41,6 +41,8 @@ counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]
 
 results <-cbind(results, counts)
 
+getHistogram(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730))
+
 # 2. Direct factor Xa inhibitors to antidepressants
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Direct factor Xa inhibitors")
 markerId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "ANTIDEPRESSANTS")
