@@ -31,6 +31,27 @@ getConfidenceInterval <- function(table, level = 0.025){
   return(counts)
 }
 
+#Histogram
+getHistogram <- function (table, bins = 48){
+  colChecks(table, c("dateIndexDrug", "dateMarkerDrug"))
+  prep <- table %>%
+    mutate(gap = as.integer(dateMarkerDrug - dateIndexDrug)) %>%
+    mutate(order = ifelse(dateMarkerDrug>dateIndexDrug, "Marker First", "Index First"))
+  
+  p <- ggplot(prep, aes(x=gap, color=order, fill=order)) + 
+    geom_histogram(bins = 48) +
+    geom_vline(xintercept = 0, linewidth = 2, color = "purple") +
+    labs(title = paste0("Time difference between the initiation of index and mark drugs"))+
+    theme(axis.text.x = element_text(angle = 45, hjust=1),
+          panel.background = element_blank() ,
+          axis.line = element_line(colour = "black", size = 0.6) ,
+          panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
+          legend.key = element_rect(fill = "transparent", colour = "transparent")) +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    xlab("Gap betwen index and marker in days") + ylab("counts")
+  return(p)
+}
+
 # ### Intake two IDs and generate two cohort sets using capr
 # generatePSSACohortDefinitions <- function (DrugId){
 #   cohort(

@@ -1,3 +1,5 @@
+source(here("Functions", "functions.R"))
+
 ### subset of cprd gold 100k
 cdm <- CDMConnector::cdm_from_con(
   con = db,
