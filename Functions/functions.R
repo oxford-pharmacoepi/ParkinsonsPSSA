@@ -2,6 +2,7 @@
 tableCleaning <- function(table, study_time){
   colChecks(table, c("cohort_definition_id", "subject_id", "cohort_start_date"))
   table %>%
+    collect() %>%
     select(cohort_definition_id, subject_id, cohort_start_date) %>%
     pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
     rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
@@ -40,7 +41,7 @@ getHistogram <- function (table, bins = 48){
   
   p <- ggplot(prep, aes(x=gap, color=order, fill=order)) + 
     geom_histogram(bins = bins) +
-    geom_vline(xintercept = 0, linewidth = 2, color = "purple") +
+    geom_vline(xintercept = 0, linewidth = 1, color = "black") +
     labs(title = paste0("Time difference between the initiation of index and mark drugs"))+
     theme(axis.text.x = element_text(angle = 45, hjust=1),
           panel.background = element_blank() ,
@@ -63,8 +64,8 @@ getHistogram <- function (table, bins = 48){
 ### Credit to Ty - checking if the dataframe has the required columns
 colChecks <- function(df, cols) {
 
-  if(!("data.frame" %in% class(df)))
-    stop("df input is not a data.frame object")
+  if(!(("data.frame" %in% class(df))|("GeneratedCohortSet" %in% class(df))))
+    stop("df input is not a data.frame or a CohortSet object")
 
   if(!("character" %in% class(cols)))
     stop("col input is not a atomic character vector")
@@ -131,7 +132,7 @@ summaryTable <- function(table, subject_id = "subject_id", dateIndexDrug = "date
   dat <-
     table %>%
     group_by(days_first_ch_format, days_first) %>%
-    summarise(marker_first = sum(orderBA), index_first = sum(!orderBA)) %>%
+    summarise(marker_first = sum(orderBA), index_first = sum(!orderBA), .groups = "drop") %>%
     ungroup()
   
   return(dat)

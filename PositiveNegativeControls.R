@@ -31,17 +31,17 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr<-crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr<-adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 results <- tibble(name = table_name_pssa, 
                   csr = csr, 
                   asr = asr)
 
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <-cbind(results, counts)
 
-getHistogram(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730))
+getHistogram(tableCleaning(cdm[[table_name_pssa]], 730))
 
 # 2. Direct factor Xa inhibitors to antidepressants
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Direct factor Xa inhibitors")
@@ -56,9 +56,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -78,9 +78,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -100,9 +100,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -182,9 +182,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -204,9 +204,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -226,9 +226,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -248,9 +248,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -270,9 +270,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -295,9 +295,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -316,9 +316,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -337,9 +337,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -358,9 +358,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -379,9 +379,9 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]] %>% collect(), 730)))
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
