@@ -2,7 +2,6 @@
 tableCleaning <- function(table, study_time){
   colChecks(table, c("cohort_definition_id", "subject_id", "cohort_start_date"))
   table %>%
-    collect() %>%
     select(cohort_definition_id, subject_id, cohort_start_date) %>%
     pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
     rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%

@@ -31,17 +31,19 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr<-crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr<-adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
+
 results <- tibble(name = table_name_pssa, 
                   csr = csr, 
                   asr = asr)
 
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-
 results <-cbind(results, counts)
 
-getHistogram(tableCleaning(cdm[[table_name_pssa]], 730))
+getHistogram(tableCleaning(table, 730))
 
 # 2. Direct factor Xa inhibitors to antidepressants
 indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Direct factor Xa inhibitors")
@@ -56,9 +58,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -78,9 +82,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -100,74 +106,76 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
                          csr = csr, 
                          asr = asr), counts))
 
-# 5. Benzodiazepine to Cholinesterase Inhibitor or memantine (complication)
-indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Benzodiazepine derivatives")
-markerId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Anticholinesterases")
-markerId2 <- getDrugIngredientCodes(cdm, "memantine")
+# # 5. Benzodiazepine to Cholinesterase Inhibitor or memantine (complication)
+# indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Benzodiazepine derivatives")
+# markerId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Anticholinesterases")
+# markerId2 <- getDrugIngredientCodes(cdm, "memantine")
+# 
+# table_name_pssa <- "pssa_benzodiazepine_cholinesterase_memantine"
+# 
+# cdm <- generateDrugUtilisationCohortSet(
+#   cdm = cdm,
+#   name = table_name_pssa,
+#   conceptSetList = c(indexId, markerId, markerId2),
+#   summariseMode = "FirstEra"
+# )
+# 
+# updated_pssa_table <- cdm[[table_name_pssa]] %>% collect()
+# updated_pssa_table <- updated_pssa_table %>% 
+#   dplyr::mutate(cohort_definition_id = case_when(cohort_definition_id == 1 | cohort_definition_id == 2 | cohort_definition_id == 3 ~ 1,
+#                           cohort_definition_id == 4 | cohort_definition_id == 5 | cohort_definition_id == 6 ~ 2))
+# updated_pssa_table <- updated_pssa_table %>% mutate(cohort_definition_id = as.integer(cohort_definition_id))
+#   
+# updated_pssa_table <- updated_pssa_table %>% 
+#   group_by(subject_id) %>% 
+#   arrange(cohort_start_date, .by_group =T) %>%
+#   filter(row_number()==1)
+#   
+# csr <- crudeSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
+# asr <- adjustedSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
 
-table_name_pssa <- "pssa_benzodiazepine_cholinesterase_memantine"
-
-cdm <- generateDrugUtilisationCohortSet(
-  cdm = cdm,
-  name = table_name_pssa,
-  conceptSetList = c(indexId, markerId, markerId2),
-  summariseMode = "FirstEra"
-)
-
-updated_pssa_table <- cdm[[table_name_pssa]] %>% collect()
-updated_pssa_table <- updated_pssa_table %>% 
-  dplyr::mutate(cohort_definition_id = case_when(cohort_definition_id == 1 | cohort_definition_id == 2 | cohort_definition_id == 3 ~ 1,
-                          cohort_definition_id == 4 | cohort_definition_id == 5 | cohort_definition_id == 6 ~ 2))
-updated_pssa_table <- updated_pssa_table %>% mutate(cohort_definition_id = as.integer(cohort_definition_id))
-  
-updated_pssa_table <- updated_pssa_table %>% 
-  group_by(subject_id) %>% 
-  arrange(cohort_start_date, .by_group =T) %>%
-  filter(row_number()==1)
-  
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
-
-# 6. Benzodiazepine to antipsychotics
-indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Benzodiazepine derivatives")
-markerId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "ANTIPSYCHOTICS")
-
-table_name_pssa <- "pssa_benzodiazepine_antipsychotics"
-
-cdm <- generateDrugUtilisationCohortSet(
-  cdm = cdm,
-  name = table_name_pssa,
-  conceptSetList = c(indexId, markerId),
-  summariseMode = "FirstEra"
-)
-
-updated_pssa_table <- cdm[[table_name_pssa]] %>% collect()
-updated_pssa_table <- updated_pssa_table %>% 
-  dplyr::mutate(cohort_definition_id = case_when(cohort_definition_id == 1 | cohort_definition_id == 2 | cohort_definition_id == 3 ~ 1,
-                                                 cohort_definition_id == 4 ~ 2))
-updated_pssa_table <- updated_pssa_table %>% mutate(cohort_definition_id = as.integer(cohort_definition_id))
-
-updated_pssa_table <- updated_pssa_table %>% 
-  group_by(subject_id) %>% 
-  arrange(cohort_start_date, .by_group =T) %>%
-  filter(row_number()==1)
-
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
-
-results <- results %>%
-  union_all(tibble(name = table_name_pssa, 
-                   csr = csr, 
-                   asr = asr))
+# # 6. Benzodiazepine to antipsychotics
+# indexId <- getATCCodes(cdm, level = c("ATC 4th"), name = "Benzodiazepine derivatives")
+# markerId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "ANTIPSYCHOTICS")
+# 
+# table_name_pssa <- "pssa_benzodiazepine_antipsychotics"
+# 
+# cdm <- generateDrugUtilisationCohortSet(
+#   cdm = cdm,
+#   name = table_name_pssa,
+#   conceptSetList = c(indexId, markerId),
+#   summariseMode = "FirstEra"
+# )
+# 
+# updated_pssa_table <- cdm[[table_name_pssa]] %>% collect()
+# updated_pssa_table <- updated_pssa_table %>% 
+#   dplyr::mutate(cohort_definition_id = case_when(cohort_definition_id == 1 | cohort_definition_id == 2 | cohort_definition_id == 3 ~ 1,
+#                                                  cohort_definition_id == 4 ~ 2))
+# updated_pssa_table <- updated_pssa_table %>% mutate(cohort_definition_id = as.integer(cohort_definition_id))
+# 
+# updated_pssa_table <- updated_pssa_table %>% 
+#   group_by(subject_id) %>% 
+#   arrange(cohort_start_date, .by_group =T) %>%
+#   filter(row_number()==1)
+# 
+# csr <- crudeSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
+# asr <- adjustedSequenceRatio(summaryTable(tableCleaning(updated_pssa_table, 730)))
+# 
+# results <- results %>%
+#   union_all(tibble(name = table_name_pssa, 
+#                    csr = csr, 
+#                    asr = asr))
 
 # 7. Rosiglitazone to furosemide
 indexId <- getDrugIngredientCodes(cdm, name = "rosiglitazone")
@@ -182,9 +190,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -204,9 +214,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -226,9 +238,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -248,9 +262,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -270,14 +286,40 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr<-crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr<-adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
                          csr = csr, 
                          asr = asr), counts))
+
+##plots 
+positive_results <- results
+
+positive_results <- positive_results %>% 
+  mutate(across(c('name'), substr, 6, nchar(name))) %>%
+  mutate()
+
+positive_results_plots <- ggplot(positive_results, aes(name, asr)) + geom_point(shape = 4, color="darkred", size=3) + 
+  geom_errorbar(aes(ymin = lowerCI, ymax = upperCI)) +
+  ggtitle("ASR and confidence intervals for different sequences") +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        panel.background = element_blank() ,
+        axis.line = element_line(colour = "black", size = 0.6) ,
+        panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
+        legend.key = element_rect(fill = "transparent", colour = "transparent")) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Sequences") + ylab("Adjusted Sequence Ratio") + geom_hline(yintercept=1, linetype="dashed", color = "red")
+
+pdf(here(plotsFolder, "positive_results.pdf"),
+    width = 18, height = 10)
+print(positive_results_plots, newpage = FALSE)
+dev.off()
+
 ################################################################################################ 
 #                                                                                              #
 #                                       Negative control                                       #
@@ -295,9 +337,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -316,9 +360,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -337,9 +383,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -358,9 +406,11 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
@@ -379,40 +429,20 @@ cdm <- generateDrugUtilisationCohortSet(
   summariseMode = "FirstEra"
 )
 
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(cdm[[table_name_pssa]], 730)))
+table <- cdm[[table_name_pssa]] %>% collect()
+
+csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
+asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
+counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
 
 results <- results %>%
   union_all(cbind(tibble(name = table_name_pssa, 
                          csr = csr, 
                          asr = asr), counts))
 
-write.csv(results, "results.csv")
-
-#### plots results
-pos_results <- results[1:9,] %>% 
-  mutate(across(c('name'), substr, 6, nchar(name))) %>%
-  mutate()
-
-pos_res_plots <- ggplot(pos_results, aes(name, asr)) + geom_point(shape = 4, color="darkred", size=3) + 
-  geom_errorbar(aes(ymin = lowerCI, ymax = upperCI)) +
-  ggtitle("ASR and confidence intervals for different sequences") +
-  theme(axis.text.x = element_text(angle = 45, hjust=1),
-        panel.background = element_blank() ,
-        axis.line = element_line(colour = "black", size = 0.6) ,
-        panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
-        legend.key = element_rect(fill = "transparent", colour = "transparent")) +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Sequences") + ylab("Adjusted Sequence Ratio") + geom_hline(yintercept=1, linetype="dashed", color = "red")
-
-pdf(here(plotsFolder, "pos_results.pdf"),
-    width = 18, height = 10)
-print(pos_res_plots, newpage = FALSE)
-dev.off()
-
-
-negative_results <- results[10:14,] %>% 
+#### plots
+negative_results <- results %>%
+  anti_join(positive_results, by = "name") %>%
   mutate(across(c('name'), substr, 6, nchar(name))) %>%
   mutate()
 
@@ -431,3 +461,7 @@ pdf(here(plotsFolder, "negative_results.pdf"),
     width = 18, height = 10)
 print(negative_res_plots, newpage = FALSE)
 dev.off()
+
+#### export
+write.csv(results, "results.csv")
+
