@@ -10,7 +10,8 @@ tableCleaning <- function(table, study_time){
     dplyr::filter(!gap==0) %>%
     dplyr::filter(-study_time<= gap & gap <= study_time) %>%
     select(-gap) %>%
-    collect()
+    collect() %>%
+    select(-subject_id)
 }
 
 # CI
@@ -84,7 +85,7 @@ colChecks <- function(df, cols) {
 
 summaryTable <- function(table, subject_id = "subject_id", dateIndexDrug = "dateIndexDrug", dateMarkerDrug = "dateMarkerDrug") {
   
-  colChecks(table, c(subject_id, dateIndexDrug, dateMarkerDrug))
+  colChecks(table, c(dateIndexDrug, dateMarkerDrug))
   
   # allocating column names
   column_names <- colnames(table)

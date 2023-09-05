@@ -300,11 +300,11 @@ results <- results %>%
 ##plots 
 positive_results <- results
 
-positive_results <- positive_results %>% 
+positive_results1 <- positive_results %>% 
   mutate(across(c('name'), substr, 6, nchar(name))) %>%
   mutate()
 
-positive_results_plots <- ggplot(positive_results, aes(name, asr)) + geom_point(shape = 4, color="darkred", size=3) + 
+positive_results_plots <- ggplot(positive_results1, aes(name, asr)) + geom_point(shape = 4, color="darkred", size=3) + 
   geom_errorbar(aes(ymin = lowerCI, ymax = upperCI)) +
   ggtitle("ASR and confidence intervals for different sequences") +
   theme(axis.text.x = element_text(angle = 45, hjust=1),
@@ -464,4 +464,3 @@ dev.off()
 
 #### export
 write.csv(results, "results.csv")
-
