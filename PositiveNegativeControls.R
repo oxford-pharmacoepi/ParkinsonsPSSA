@@ -20,7 +20,7 @@ if (!dir.exists(plotsFolder)) {
 ################################################################################################
 #1. Amiodarone to Levothyroxine
 #step 1: generate the necessary drug cohort using generateDrugCohort()
-drugCohort <- generateDrugCohort(index = list(c("amiodarone", "ingredient")), marker = list(c("levothyroxine", "ingredient")))
+drugCohort <- generateDrugCohort(cdm = cdm, index = list(c("amiodarone", "ingredient")), marker = list(c("levothyroxine", "ingredient")))
 
 #step 2: create CSR, ASR and CI
 csr<-crudeSequenceRatio(summaryTable(tableCleaning(drugCohort, 730)))
@@ -39,77 +39,88 @@ getHistogram(tableCleaning(drugCohort, 730), "weeks")
 getHistogram(tableCleaning(drugCohort, 730), "months")
 
 #### Alternatively, step 1 and step 2 can be done using one step
-results_pssa <- getPSSA(index = list(c("amiodarone", "ingredient")), 
-                   marker = list(c("levothyroxine", "ingredient")), 
-                   table_name = "pssa_amiodarone_levothyroxine",
-                   study_time = 730) 
+results_pssa <- getPSSA(cdm = cdm,
+                        index = list(c("amiodarone", "ingredient")), 
+                        marker = list(c("levothyroxine", "ingredient")), 
+                        table_name = "pssa_amiodarone_levothyroxine",
+                        study_time = 730) 
 
 # 2. Direct factor Xa inhibitors to antidepressants
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("Direct factor Xa inhibitors", "ATC 4th")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("Direct factor Xa inhibitors", "ATC 4th")), 
                 marker = list(c("ANTIDEPRESSANTS", "ATC 3rd")), 
                 table_name = "pssa_dfx_antidepressants",
                 study_time = 730))
 
 # 3. CCB to Diuretics
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("CALCIUM CHANNEL BLOCKERS", "ATC 2nd")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("CALCIUM CHANNEL BLOCKERS", "ATC 2nd")), 
                 marker = list(c("DIURETICS", "ATC 2nd")), 
                 table_name = "pssa_ccb_diuretics",
                 study_time = 730))
 
 # 4. antipsychotics to antiparkinson drugs
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("ANTIPSYCHOTICS", "ATC 3rd")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("ANTIPSYCHOTICS", "ATC 3rd")), 
                 marker = list(c("ANTI-PARKINSON DRUGS", "ATC 2nd")), 
                 table_name = "pssa_antipsychotics_antiparkinsonian",
                 study_time = 730))
 
 # 5. Benzodiazepine to Cholinesterase Inhibitor or memantine (complication)
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("Benzodiazepine derivatives", "ATC 4th")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("Benzodiazepine derivatives", "ATC 4th")), 
                 marker = list(c("Anticholinesterases", "ATC 4th"), c("memantine", "ingredient")), 
                 table_name = "pssa_benzodiazepine_cholinesterase_memantine",
                 study_time = 730))
 
 # 6. Benzodiazepine to antipsychotics
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("Benzodiazepine derivatives", "ATC 4th")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("Benzodiazepine derivatives", "ATC 4th")), 
                 marker = list(c("ANTIPSYCHOTICS", "ATC 3rd")), 
                 table_name = "pssa_benzodiazepine_antipsychotics",
                 study_time = 730))
 
 # 7. Rosiglitazone to furosemide
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("rosiglitazone", "ingredient")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("rosiglitazone", "ingredient")), 
                 marker = list(c("furosemide", "ingredient")), 
                 table_name = "pssa_rosiglitazone_furosemide",
                 study_time = 730))
 
 # 8. SGLT2 inhibitors to antifungal 
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("Sodium-glucose co-transporter 2 (SGLT2) inhibitors", "ATC 4th")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("Sodium-glucose co-transporter 2 (SGLT2) inhibitors", "ATC 4th")), 
                 marker = list(c("ANTIFUNGALS FOR DERMATOLOGICAL USE", "ATC 2nd")), 
                 table_name = "pssa_sglt2_antifungal",
                 study_time = 730))
 
 # 9. Statins to antibiotics
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("HMG CoA reductase inhibitors", "ATC 4th")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("HMG CoA reductase inhibitors", "ATC 4th")), 
                 marker = list(c("ANTIBACTERIALS FOR SYSTEMIC USE", "ATC 2nd")), 
                 table_name = "pssa_statins_antibiotics",
                 study_time = 730))
 
 # 10. Statins to antidepressants
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("HMG CoA reductase inhibitors", "ATC 4th")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("HMG CoA reductase inhibitors", "ATC 4th")), 
                 marker = list(c("ANTIDEPRESSANTS", "ATC 3rd")), 
                 table_name = "pssa_statins_antidepressants",
                 study_time = 730))
 
 # 11. Statins to quinine
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("HMG CoA reductase inhibitors", "ATC 4th")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("HMG CoA reductase inhibitors", "ATC 4th")), 
                 marker = list(c("quinine", "ingredient")), 
                 table_name = "pssa_statins_quinine",
                 study_time = 730))
@@ -145,35 +156,40 @@ write.xlsx(positive_results, "positive_results.xlsx")
 ################################################################################################
 # 1. amiodarone to allopurinol
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("amiodarone", "ingredient")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("amiodarone", "ingredient")), 
                 marker = list(c("allopurinol", "ingredient")), 
                 table_name = "pssa_amiodarone_allopurinol",
                 study_time = 730))
 
 # 2. levothyroxine to allopurinol
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("levothyroxine", "ingredient")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("levothyroxine", "ingredient")), 
                 marker = list(c("allopurinol", "ingredient")), 
                 table_name = "pssa_levothyroxine_allopurinol",
                 study_time = 730))
 
 # 3. Rosuvastatin to levothyroxine
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("rosuvastatin", "ingredient")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("rosuvastatin", "ingredient")), 
                 marker = list(c("levothyroxine", "ingredient")), 
                 table_name = "pssa_rosuvastatin_levothyroxine",
                 study_time = 730))
 
 # 4. levothyroxine to loop diuretics
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("levothyroxine", "ingredient")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("levothyroxine", "ingredient")), 
                 marker = list(c("high-ceiling diuretics", "ATC 3rd")), 
                 table_name = "pssa_levothyroxine_loop_diuretics",
                 study_time = 730))
 
 # 5. ace-inhibitors to loop diuretics
 results_pssa <- results_pssa %>%
-  rbind(getPSSA(index = list(c("ACE INHIBITORS, PLAIN", "ATC 3rd")), 
+  rbind(getPSSA(cdm = cdm,
+                index = list(c("ACE INHIBITORS, PLAIN", "ATC 3rd")), 
                 marker = list(c("high-ceiling diuretics", "ATC 3rd")), 
                 table_name = "pssa_ace_inhibitors_loop_diuretics",
                 study_time = 730))

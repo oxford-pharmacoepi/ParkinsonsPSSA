@@ -70,7 +70,8 @@ getHistogram <- function (table, bins = 48){
   return(p)
 }
 
-generateDrugCohort <- function(index, marker, table_name = "pssa"){
+#generating drug cohort in one go
+generateDrugCohort <- function(cdm, index, marker, table_name = "pssa"){
   index_drug <- list()
   marker_drug <- list()
   
@@ -128,8 +129,8 @@ generateDrugCohort <- function(index, marker, table_name = "pssa"){
 }
 
 ##### getPSSA (complete approach)
-getPSSA <- function(index, marker, table_name = "pssa", study_time = NULL, confidence_interval_level = 0.025){
-  table <- generateDrugCohort(index = index, marker = marker, table_name = table_name)
+getPSSA <- function(cdm, index, marker, table_name = "pssa", study_time = NULL, confidence_interval_level = 0.025){
+  table <- generateDrugCohort(cdm = cdm, index = index, marker = marker, table_name = table_name)
   table_cleaned <- tableCleaning(table = table, study_time = study_time)
   csr<-crudeSequenceRatio(summaryTable(table_cleaned))
   asr<-adjustedSequenceRatio(summaryTable(table_cleaned))
