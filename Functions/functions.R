@@ -1,30 +1,47 @@
 ### Input a cdm table and a study period and output a cleaned version of table, so that it can be used in asr
-tableCleaning <- function(table, study_time){
+tableCleaning <- function(table, study_time = NULL){
   colChecks(table, c("cohort_definition_id", "subject_id", "cohort_start_date"))
-  table %>%
-    select(cohort_definition_id, subject_id, cohort_start_date) %>%
-    pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
-    rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
-    mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
-    dplyr::filter(!is.na(gap)) %>%
-    dplyr::filter(!gap==0) %>%
-    dplyr::filter(-study_time<= gap & gap <= study_time) %>%
-    select(-gap) %>%
-    collect() %>%
-    select(-subject_id)
+  if (is.null(study_time)){
+    dat <- 
+      table %>%
+      select(cohort_definition_id, subject_id, cohort_start_date) %>%
+      pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
+      rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
+      mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
+      dplyr::filter(!is.na(gap)) %>%
+      dplyr::filter(!gap==0) %>%
+      select(-gap) %>%
+      collect() %>%
+      select(-subject_id)
+  }
+  else{
+    dat <-
+      table %>%
+      select(cohort_definition_id, subject_id, cohort_start_date) %>%
+      pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
+      rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
+      mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
+      dplyr::filter(!is.na(gap)) %>%
+      dplyr::filter(!gap==0) %>%
+      dplyr::filter(-study_time<= gap & gap <= study_time) %>%
+      select(-gap) %>%
+      collect() %>%
+      select(-subject_id)
+  }
+  return(dat)
 }
 
 # CI
-getConfidenceInterval <- function(table, level = 0.025){
+getConfidenceInterval <- function(table, confidence_interval_level = 0.025){
   colChecks(table, c("marker_first", "index_first"))
   
   counts <- tibble(
-    first = table %>% pull(index_first) %>% sum(.),
-    last = table %>% pull(marker_first) %>% sum(.)
+    index_first = table %>% pull(index_first) %>% sum(.),
+    marker_first = table %>% pull(marker_first) %>% sum(.)
   )
   
-  counts$lowerCI <- qbeta(level, counts$first + 0.5, counts$last + 0.5)
-  counts$upperCI <- qbeta(1-level, counts$first + 0.5, counts$last + 0.5)
+  counts$lowerCI <- qbeta(confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
+  counts$upperCI <- qbeta(1-confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
   
   counts$lowerCI <- counts$lowerCI/(1-counts$lowerCI)
   counts$upperCI <- counts$upperCI/(1-counts$upperCI)
@@ -51,6 +68,80 @@ getHistogram <- function (table, bins = 48){
     theme(plot.title = element_text(hjust = 0.5)) +
     xlab("Gap betwen index and marker in days") + ylab("counts")
   return(p)
+}
+
+generateDrugCohort <- function(index, marker, table_name = "pssa"){
+  index_drug <- list()
+  marker_drug <- list()
+  
+  for (i in (1: length(index))){
+    if (index[[i]][2] == "ingredient"){
+      index_drug[[i]] <- getDrugIngredientCodes(cdm = cdm, name = index[[i]][1])
+    } else {
+      index_drug[[i]] <- getATCCodes(cdm = cdm, name = index[[i]][1], level = c(index[[i]][2]))
+    }
+  }
+  
+  for (i in (1: length(marker))){
+    if (marker[[i]][2] == "ingredient"){
+      marker_drug[[i]] <- getDrugIngredientCodes(cdm = cdm, name = marker[[i]][1])
+    } else {
+      marker_drug[[i]] <- getATCCodes(cdm = cdm, name = marker[[i]][1], level = c(marker[[i]][2]))
+    }
+  }
+  
+  conceptSetList <- c()
+  for (i in (1:length(index_drug))){
+    conceptSetList <- c(conceptSetList, index_drug[[i]])
+  }
+  
+  for (i in (1: length(marker_drug))){
+    conceptSetList <- c(conceptSetList, marker_drug[[i]])
+  }
+  
+  cdm <- generateDrugUtilisationCohortSet(
+    cdm = cdm,
+    name = table_name,
+    conceptSetList = conceptSetList,
+    summariseMode = "FirstEra"
+  )
+  
+  index_length <- 0
+  for (i in (1:length(index_drug))){
+    index_length <- index_length + length(index_drug[[i]])
+  }
+  
+  cdm[[table_name]] <- cdm[[table_name]] %>%
+    collect() %>%
+    dplyr::mutate(cohort_definition_id = case_when(cohort_definition_id <= index_length ~ 1,
+                                                   cohort_definition_id > index_length ~ 2)) %>% 
+    dplyr::mutate(cohort_definition_id = as.integer(cohort_definition_id)) %>%
+    group_by(cohort_definition_id, subject_id) %>%
+    arrange(cohort_start_date, .by_group =T) %>%
+    filter(row_number()==1) %>%
+    ungroup() %>%
+    compute()
+  
+  raw_table <- cdm[[table_name]] 
+  
+  return(raw_table)
+}
+
+##### getPSSA (complete approach)
+getPSSA <- function(index, marker, table_name = "pssa", study_time = NULL, confidence_interval_level = 0.025){
+  table <- generateDrugCohort(index = index, marker = marker, table_name = table_name)
+  table_cleaned <- tableCleaning(table = table, study_time = study_time)
+  csr<-crudeSequenceRatio(summaryTable(table_cleaned))
+  asr<-adjustedSequenceRatio(summaryTable(table_cleaned))
+  counts <- getConfidenceInterval(summaryTable(table_cleaned))
+  
+  results <- tibble(name = table_name, 
+                    csr = csr, 
+                    asr = asr)
+  
+  results <- cbind(results, counts)
+  
+  return(results)
 }
 
 # ### Intake two IDs and generate two cohort sets using capr
