@@ -199,4 +199,4 @@ print(negative_res_plots, newpage = FALSE)
 dev.off()
 
 #### export
-write.csv(results, "results.csv")
+write.csv(results_pssa, "results_pssa.csv")
