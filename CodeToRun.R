@@ -16,6 +16,7 @@ library(DrugUtilisation)
 library(lubridate)
 library(CirceR) #remotes::install_github("ohdsi/CirceR")
 library(ggplot2)
+library(xlsx)
 
 # database metadata and connection details -----
 # The name/ acronym for the database

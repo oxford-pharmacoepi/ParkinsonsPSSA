@@ -135,128 +135,49 @@ pdf(here(plotsFolder, "positive_results.pdf"),
 print(positive_results_plots, newpage = FALSE)
 dev.off()
 
+write.xlsx(positive_results, "positive_results.xlsx")
 ################################################################################################ 
 #                                                                                              #
 #                                       Negative control                                       #
 #                                                                                              #  
 ################################################################################################
 # 1. amiodarone to allopurinol
-indexId <- getDrugIngredientCodes(cdm, "amiodarone")
-markerId <- getDrugIngredientCodes(cdm, "allopurinol")
-table_name_pssa <- "pssa_amiodarone_allopurinol"
-
-cdm <- generateDrugUtilisationCohortSet(
-  cdm = cdm,
-  name = table_name_pssa,
-  conceptSetList = c(indexId, markerId),
-  summariseMode = "FirstEra"
-)
-
-table <- cdm[[table_name_pssa]] %>% collect()
-
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
-
-results <- results %>%
-  union_all(cbind(tibble(name = table_name_pssa, 
-                         csr = csr, 
-                         asr = asr), counts))
+results_pssa <- results_pssa %>%
+  rbind(getPSSA(index = list(c("amiodarone", "ingredient")), 
+                marker = list(c("allopurinol", "ingredient")), 
+                table_name = "pssa_amiodarone_allopurinol",
+                study_time = 730))
 
 # 2. levothyroxine to allopurinol
-indexId <- getDrugIngredientCodes(cdm, "levothyroxine")
-markerId <- getDrugIngredientCodes(cdm, "allopurinol")
-table_name_pssa <- "pssa_levothyroxine_allopurinol"
-
-cdm <- generateDrugUtilisationCohortSet(
-  cdm = cdm,
-  name = table_name_pssa,
-  conceptSetList = c(indexId, markerId),
-  summariseMode = "FirstEra"
-)
-
-table <- cdm[[table_name_pssa]] %>% collect()
-
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
-
-results <- results %>%
-  union_all(cbind(tibble(name = table_name_pssa, 
-                         csr = csr, 
-                         asr = asr), counts))
+results_pssa <- results_pssa %>%
+  rbind(getPSSA(index = list(c("levothyroxine", "ingredient")), 
+                marker = list(c("allopurinol", "ingredient")), 
+                table_name = "pssa_levothyroxine_allopurinol",
+                study_time = 730))
 
 # 3. Rosuvastatin to levothyroxine
-indexId <- getDrugIngredientCodes(cdm, "rosuvastatin")
-markerId <- getDrugIngredientCodes(cdm, "levothyroxine")
-table_name_pssa <- "pssa_rosuvastatin_levothyroxine"
-
-cdm <- generateDrugUtilisationCohortSet(
-  cdm = cdm,
-  name = table_name_pssa,
-  conceptSetList = c(indexId, markerId),
-  summariseMode = "FirstEra"
-)
-
-table <- cdm[[table_name_pssa]] %>% collect()
-
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
-
-results <- results %>%
-  union_all(cbind(tibble(name = table_name_pssa, 
-                         csr = csr, 
-                         asr = asr), counts))
+results_pssa <- results_pssa %>%
+  rbind(getPSSA(index = list(c("rosuvastatin", "ingredient")), 
+                marker = list(c("levothyroxine", "ingredient")), 
+                table_name = "pssa_rosuvastatin_levothyroxine",
+                study_time = 730))
 
 # 4. levothyroxine to loop diuretics
-indexId <- getDrugIngredientCodes(cdm, "levothyroxine")
-markerId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "high-ceiling diuretics")
-table_name_pssa <- "pssa_levothyroxine_loop_diuretics"
-
-cdm <- generateDrugUtilisationCohortSet(
-  cdm = cdm,
-  name = table_name_pssa,
-  conceptSetList = c(indexId, markerId),
-  summariseMode = "FirstEra"
-)
-
-table <- cdm[[table_name_pssa]] %>% collect()
-
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
-
-results <- results %>%
-  union_all(cbind(tibble(name = table_name_pssa, 
-                         csr = csr, 
-                         asr = asr), counts))
+results_pssa <- results_pssa %>%
+  rbind(getPSSA(index = list(c("levothyroxine", "ingredient")), 
+                marker = list(c("high-ceiling diuretics", "ATC 3rd")), 
+                table_name = "pssa_levothyroxine_loop_diuretics",
+                study_time = 730))
 
 # 5. ace-inhibitors to loop diuretics
-indexId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "ACE INHIBITORS, PLAIN")
-markerId <- getATCCodes(cdm, level = c("ATC 3rd"), name = "high-ceiling diuretics")
-table_name_pssa <- "pssa_ace_inhibitors_loop_diuretics"
-
-cdm <- generateDrugUtilisationCohortSet(
-  cdm = cdm,
-  name = table_name_pssa,
-  conceptSetList = c(indexId, markerId),
-  summariseMode = "FirstEra"
-)
-
-table <- cdm[[table_name_pssa]] %>% collect()
-
-csr <- crudeSequenceRatio(summaryTable(tableCleaning(table, 730)))
-asr <- adjustedSequenceRatio(summaryTable(tableCleaning(table, 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(table, 730)))
-
-results <- results %>%
-  union_all(cbind(tibble(name = table_name_pssa, 
-                         csr = csr, 
-                         asr = asr), counts))
+results_pssa <- results_pssa %>%
+  rbind(getPSSA(index = list(c("ACE INHIBITORS, PLAIN", "ATC 3rd")), 
+                marker = list(c("high-ceiling diuretics", "ATC 3rd")), 
+                table_name = "pssa_ace_inhibitors_loop_diuretics",
+                study_time = 730))
 
 #### plots
-negative_results <- results %>%
+negative_results <- results_pssa %>%
   anti_join(positive_results, by = "name") %>%
   mutate(across(c('name'), substr, 6, nchar(name))) %>%
   mutate()
