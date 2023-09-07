@@ -4,29 +4,29 @@ tableCleaning <- function(table, study_time = NULL){
   if (is.null(study_time)){
     dat <- 
       table %>%
-      select(cohort_definition_id, subject_id, cohort_start_date) %>%
+      dplyr::select(cohort_definition_id, subject_id, cohort_start_date) %>%
       pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
-      rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
-      mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
+      dplyr::rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
+      dplyr::mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
       dplyr::filter(!is.na(gap)) %>%
       dplyr::filter(!gap==0) %>%
-      select(-gap) %>%
+      dplyr::select(-gap) %>%
       collect() %>%
-      select(-subject_id)
+      dplyr::select(-subject_id)
   }
   else{
     dat <-
       table %>%
-      select(cohort_definition_id, subject_id, cohort_start_date) %>%
+      dplyr::select(cohort_definition_id, subject_id, cohort_start_date) %>%
       pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
-      rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
-      mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
+      dplyr::rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
+      dplyr::mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
       dplyr::filter(!is.na(gap)) %>%
       dplyr::filter(!gap==0) %>%
       dplyr::filter(-study_time<= gap & gap <= study_time) %>%
-      select(-gap) %>%
+      dplyr::select(-gap) %>%
       collect() %>%
-      select(-subject_id)
+      dplyr::select(-subject_id)
   }
   return(dat)
 }

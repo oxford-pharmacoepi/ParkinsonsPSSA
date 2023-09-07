@@ -27,14 +27,16 @@ csr<-crudeSequenceRatio(summaryTable(tableCleaning(drugCohort, 730)))
 asr<-adjustedSequenceRatio(summaryTable(tableCleaning(drugCohort, 730)))
 counts <- getConfidenceInterval(summaryTable(tableCleaning(drugCohort, 730)))
 
-results <- tibble(name = table_name_pssa, 
+results <- tibble(name = "pssa_amiodarone_levothyroxine", 
                   csr = csr, 
                   asr = asr)
 
 results <-cbind(results, counts)
 
 #step 3: produce a histogram plot
-getHistogram(tableCleaning(drugCohort, 730))
+getHistogram(tableCleaning(drugCohort, 730), "days")
+getHistogram(tableCleaning(drugCohort, 730), "weeks")
+getHistogram(tableCleaning(drugCohort, 730), "months")
 
 #### Alternatively, step 1 and step 2 can be done using one step
 results_pssa <- getPSSA(index = list(c("amiodarone", "ingredient")), 
