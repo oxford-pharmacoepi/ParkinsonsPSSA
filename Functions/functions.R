@@ -349,7 +349,7 @@ summaryTable <- function(table, subject_id = "subject_id", dateIndexDrug = "date
       date_first = lubridate::as_date(ifelse(orderBA, dateMarkerDrug, dateIndexDrug)), # setting which date is first and which is second
       date_second = lubridate::as_date(ifelse(orderBA, dateIndexDrug, dateMarkerDrug)),
       days_first = as.integer((date_start %--% date_first) / lubridate::days(1)), # gap between the first drug of a person and the first drug of the whole population
-      days_second = as.integer((date_first %--% date_second) / lubridate::days(1)) # gap betwen two drugs of a person
+      days_second = as.integer((date_first %--% date_second) / lubridate::days(1)) # gap between two drugs of a person
     )
   
   #max number of digits in days_first
@@ -507,11 +507,22 @@ indexDeltaForward <- function(x, delta) {
   
 }
 
-#### Not sure what is going on 
+#### Backward:
 # y and t are vectors of the same length
-# t is again no decreasing
-# when backward is T, the output is again a vector of the same length, the jth entry is the sum of y_i from max{i<j:t[j]-t[i]>delta}+1 to (j-1)
-# similarly for backward is F.
+# t is again non decreasing
+# this is calculating the sum of y depending on t.
+# for ith position, it looks at the ith value of t. Look back in t to find the minimum index 
+# of t such that the difference is less than or equal to delta. Say this index is j
+# then for the ith position, it is summing y from j to i-1. By default/design the 1st entry is 0.
+
+#### Forward:
+# y and t are vectors of the same length
+# t is again non decreasing
+# this is calculating the sum of y depending on t.
+# for ith position, it looks at the ith value of t. Look forward in t to find the maximum index 
+# of t such that the difference is less than or equal to delta. Say this index is j
+# then for the ith position, it is summing y from i+1 to j. By default/design the last entry is 0.
+
 deltaCumulativeSum <- function(y, t, delta, backwards = TRUE) {
   
   if (is.null(y)) {
