@@ -33,6 +33,11 @@ results <- tibble(name = "pssa_amiodarone_levothyroxine",
 
 results <-cbind(results, counts)
 
+# or
+getPSSA(cdm = cdm,
+        cohort_table = drugCohort,
+        study_time = 730)
+
 #step 3: produce a histogram plot
 getHistogram(tableCleaning(drugCohort, 730), "days")
 getHistogram(tableCleaning(drugCohort, 730), "weeks")

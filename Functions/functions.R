@@ -201,7 +201,8 @@ generateDrugCohort <- function(cdm, index, marker, table_name = "pssa"){
 ##### getPSSA (complete approach) 
 ##### either give both index and marker names or 
 ##### cohort_table (latter most preferably being generated from GenerateDrugCohort())
-getPSSA <- function(index, 
+getPSSA <- function(cdm,
+                    index, 
                     marker, 
                     cohort_table, 
                     table_name = "pssa", 
@@ -226,6 +227,8 @@ getPSSA <- function(index,
   
   return(results)
 }
+
+
 
 # ### Intake two IDs and generate two cohort sets using capr
 # generatePSSACohortDefinitions <- function (DrugId){
