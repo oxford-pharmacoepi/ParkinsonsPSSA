@@ -4,29 +4,29 @@ tableCleaning <- function(table, study_time = NULL){
   if (is.null(study_time)){
     dat <- 
       table %>%
-      dplyr::select(cohort_definition_id, subject_id, cohort_start_date) %>%
+      select(cohort_definition_id, subject_id, cohort_start_date) %>%
       pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
-      dplyr::rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
-      dplyr::mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
+      rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
+      mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
       dplyr::filter(!is.na(gap)) %>%
       dplyr::filter(!gap==0) %>%
-      dplyr::select(-gap) %>%
+      select(-gap) %>%
       collect() %>%
-      dplyr::select(-subject_id)
+      select(-subject_id)
   }
   else{
     dat <-
       table %>%
-      dplyr::select(cohort_definition_id, subject_id, cohort_start_date) %>%
+      select(cohort_definition_id, subject_id, cohort_start_date) %>%
       pivot_wider(names_from = cohort_definition_id, values_from = cohort_start_date) %>% 
-      dplyr::rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
-      dplyr::mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
+      rename("dateIndexDrug" = `1`, "dateMarkerDrug" = `2`) %>%
+      mutate(gap = dateMarkerDrug - dateIndexDrug) %>%
       dplyr::filter(!is.na(gap)) %>%
       dplyr::filter(!gap==0) %>%
       dplyr::filter(-study_time<= gap & gap <= study_time) %>%
-      dplyr::select(-gap) %>%
+      select(-gap) %>%
       collect() %>%
-      dplyr::select(-subject_id)
+      select(-subject_id)
   }
   return(dat)
 }
@@ -50,28 +50,98 @@ getConfidenceInterval <- function(table, confidence_interval_level = 0.025){
 }
 
 #Histogram
-getHistogram <- function (table, bins = 48){
+getHistogram <- function (table, time_scale = "weeks"){
   colChecks(table, c("dateIndexDrug", "dateMarkerDrug"))
+  # added in additional columns that calculate gap in days/weeks/months etc
   prep <- table %>%
-    mutate(gap = as.integer(dateMarkerDrug - dateIndexDrug)) %>%
-    mutate(order = ifelse(dateMarkerDrug>dateIndexDrug, "Marker First", "Index First"))
+    mutate(gap_days = as.integer(dateMarkerDrug - dateIndexDrug)) %>%
+    mutate(gap_weeks = round((gap_days / 7),0)) %>% 
+    mutate(gap_months = round((gap_days / 31),0)) %>% 
+    mutate(`Drug Initiation Order` = ifelse(dateMarkerDrug > dateIndexDrug, "Index -> Marker", "Marker -> Index")) 
+  # %>%
+  #   filter(gap_weeks <= 52) %>%
+  #   filter(gap_weeks >= - 52) # saw a paper where they only look at 1 year either side
   
-  p <- ggplot(prep, aes(x=gap, color=order, fill=order)) + 
-    geom_histogram(bins = bins) +
-    geom_vline(xintercept = 0, linewidth = 1, color = "black") +
-    labs(title = paste0("Time difference between the initiation of index and mark drugs"))+
-    theme(axis.text.x = element_text(angle = 45, hjust=1),
-          panel.background = element_blank() ,
-          axis.line = element_line(colour = "black", size = 0.6) ,
-          panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
-          legend.key = element_rect(fill = "transparent", colour = "transparent")) +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    xlab("Gap betwen index and marker in days") + ylab("counts")
-  return(p)
+  
+  #calculate the number of bins so we have a nice distribution
+  if( (nrow(prep)%%2) == 0) {
+    bins <- nrow(prep)
+  } else {
+    bins <- nrow(prep) + 1 # basically add 1 if the number is odd
+  }
+  
+  if(time_scale == "weeks") {
+    
+    #max and min values for breaks for axis
+    max_val <- plyr::round_any(max(prep$gap_weeks), 10, f = ceiling)
+    min_val <- plyr::round_any(min(prep$gap_weeks), 10, f = floor)
+    
+    p <- ggplot(prep, aes(x=gap_weeks, color=`Drug Initiation Order`, fill=`Drug Initiation Order`)) + 
+      geom_histogram(bins = bins, color="black") +
+      geom_hline(yintercept=0, colour="white", size=0.5) + # this removes the green line at the bottom
+      geom_vline(xintercept = 0, linewidth = 1, color = "red", linetype ="dashed") +
+      #labs(title = paste0("Time difference between the initiation of index and marker drugs"))+
+      scale_y_continuous(expand = c(0, 0)) + # this removed the gap between the y axis and bottom on the bars so now they rest flush on the axis
+      scale_x_continuous(breaks=seq(min_val, max_val, 8)) + # creates set breaks in your time axis
+      theme(axis.text.x = element_text(angle = 45, hjust=1),
+            panel.background = element_blank() ,
+            axis.line = element_line(colour = "black", size = 0.6) ,
+            panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
+            legend.key = element_rect(fill = "transparent", colour = "transparent")) +
+      theme(plot.title = element_text(hjust = 0.5)) +
+      xlab("Weeks before and after index drug initiation") + ylab("Number of Patients") 
+    
+    return(p)
+    
+  } else if(time_scale == "days") {
+    
+    max_val <- plyr::round_any(max(prep$gap_days), 10, f = ceiling)
+    min_val <- plyr::round_any(min(prep$gap_days), 10, f = floor)
+    
+    p <- ggplot(prep, aes(x=gap_days, color=`Drug Initiation Order`, fill=`Drug Initiation Order`)) + 
+      geom_histogram(bins = bins, color="black") +
+      geom_hline(yintercept=0, colour="white", size=0.5) +
+      geom_vline(xintercept = 0, linewidth = 1, color = "red", linetype ="dashed") +
+      #labs(title = paste0("Time difference between the initiation of index and marker drugs"))+
+      scale_y_continuous(expand = c(0, 0)) +
+      scale_x_continuous(breaks=seq(min_val, max_val, 60)) + # creates set breaks in your time axis
+      theme(axis.text.x = element_text(angle = 45, hjust=1),
+            panel.background = element_blank() ,
+            axis.line = element_line(colour = "black", size = 0.6) ,
+            panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
+            legend.key = element_rect(fill = "transparent", colour = "transparent")) +
+      theme(plot.title = element_text(hjust = 0.5)) +
+      xlab("Days before and after index drug initiation") + ylab("Number of Patients") 
+    
+    return(p)
+    
+  }  else if(time_scale == "months") {
+    
+    max_val <- plyr::round_any(max(prep$gap_months), 10, f = ceiling)
+    min_val <- plyr::round_any(min(prep$gap_months), 10, f = floor)
+    
+    p <- ggplot(prep, aes(x=gap_months, color=`Drug Initiation Order`, fill=`Drug Initiation Order`)) + 
+      geom_histogram(bins = bins, color="black") +
+      geom_hline(yintercept=0, colour="white", size=0.5) +
+      geom_vline(xintercept = 0, linewidth = 1, color = "red", linetype ="dashed") +
+      #labs(title = paste0("Time difference between the initiation of index and marker drugs"))+
+      scale_y_continuous(expand = c(0, 0)) +
+      scale_x_continuous(breaks=seq(min_val, max_val, 3)) + # creates set breaks in your time axis
+      theme(axis.text.x = element_text(angle = 45, hjust=1),
+            panel.background = element_blank() ,
+            axis.line = element_line(colour = "black", size = 0.6) ,
+            panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
+            legend.key = element_rect(fill = "transparent", colour = "transparent")) +
+      theme(plot.title = element_text(hjust = 0.5)) +
+      xlab("Months before and after index drug initiation") + ylab("Number of Patients") 
+    
+    return(p)
+    
+  } 
 }
 
-#generating drug cohort in one go
-generateDrugCohort <- function(cdm, index, marker, table_name = "pssa"){
+#generate cohort 
+generateDrugCohort <- function(index, marker, table_name = "pssa"){
   index_drug <- list()
   marker_drug <- list()
   
@@ -129,8 +199,8 @@ generateDrugCohort <- function(cdm, index, marker, table_name = "pssa"){
 }
 
 ##### getPSSA (complete approach)
-getPSSA <- function(cdm, index, marker, table_name = "pssa", study_time = NULL, confidence_interval_level = 0.025){
-  table <- generateDrugCohort(cdm = cdm, index = index, marker = marker, table_name = table_name)
+getPSSA <- function(index, marker, table_name = "pssa", study_time = NULL, confidence_interval_level = 0.025){
+  table <- generateDrugCohort(index = index, marker = marker, table_name = table_name)
   table_cleaned <- tableCleaning(table = table, study_time = study_time)
   csr<-crudeSequenceRatio(summaryTable(table_cleaned))
   asr<-adjustedSequenceRatio(summaryTable(table_cleaned))
@@ -392,4 +462,3 @@ deltaCumulativeSum <- function(y, t, delta, backwards = TRUE) {
   }
   
 }
-
