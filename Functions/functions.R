@@ -141,7 +141,7 @@ getHistogram <- function (table, time_scale = "weeks"){
 }
 
 #generate cohort 
-generateDrugCohort <- function(index, marker, table_name = "pssa"){
+generateDrugCohort <- function(cdm, index, marker, table_name = "pssa"){
   index_drug <- list()
   marker_drug <- list()
   
