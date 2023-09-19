@@ -50,9 +50,10 @@ getConfidenceInterval <- function(table, confidence_interval_level = 0.025){
 }
 
 #Histogram
-getHistogram <- function (table, time_scale = "weeks"){
-  colChecks(table, c("dateIndexDrug", "dateMarkerDrug"))
+getHistogram <- function (pssa_output, time_scale = "weeks"){
+  colChecks(pssa_output[[1]], c("dateIndexDrug", "dateMarkerDrug"))
   # added in additional columns that calculate gap in days/weeks/months etc
+  table <- pssa_output[[1]]
   prep <- table %>%
     mutate(gap_days = as.integer(dateMarkerDrug - dateIndexDrug)) %>%
     mutate(gap_weeks = round((gap_days / 7),0)) %>% 
@@ -141,7 +142,7 @@ getHistogram <- function (table, time_scale = "weeks"){
 }
 
 #generate cohort 
-generateDrugCohort <- function(cdm, index, marker, table_name = "pssa"){
+generateDrugCohortPSSA <- function(cdm, index, marker, table_name = "pssa"){
   index_drug <- list()
   marker_drug <- list()
   
@@ -200,19 +201,19 @@ generateDrugCohort <- function(cdm, index, marker, table_name = "pssa"){
 
 ##### getPSSA (complete approach) 
 ##### either give both index and marker names or 
-##### cohort_table (latter most preferably being generated from GenerateDrugCohort())
+##### cohort_table (latter most preferably being generated from generateDrugCohortPSSA())
 getPSSA <- function(cdm,
                     index, 
                     marker, 
-                    cohort_table, 
+                    cohort_table = NULL, 
                     table_name = "pssa", 
                     study_time = NULL, 
                     confidence_interval_level = 0.025){
-  if (nrow(cohort_table)>0){
+  if (!is.null(cohort_table)){
     colChecks(cohort_table, c("cohort_definition_id", "subject_id", "cohort_start_date"))
     table <- cohort_table
   } else {
-    table <- generateDrugCohort(index = index, marker = marker, table_name = table_name)
+    table <- generateDrugCohortPSSA(cdm = cdm, index = index, marker = marker, table_name = table_name)
   }
   table_cleaned <- tableCleaning(table = table, study_time = study_time)
   csr<-crudeSequenceRatio(summaryTable(table_cleaned))
@@ -225,10 +226,71 @@ getPSSA <- function(cdm,
   
   results <- cbind(results, counts)
   
-  return(results)
+  result <- list(table_cleaned, results)
+  
+  return(result)
 }
 
+### Waiting Time Distribution
+generateSingleDrugCohort <- function(cdm, drug, table_name = "wtd", start_date, end_date, prior_obs = 365){
+  drug_name <- list()
+  
+  for (i in (1: length(drug))){
+    if (drug[[i]][2] == "ingredient"){
+      drug_name[[i]] <- getDrugIngredientCodes(cdm = cdm, name = drug[[i]][1])
+    } else {
+      drug_name[[i]] <- getATCCodes(cdm = cdm, name = drug[[i]][1], level = c(drug[[i]][2]))
+    }
+  }
+  
+  conceptSetList <- c()
+  for (i in (1:length(drug_name))){
+    conceptSetList <- c(conceptSetList, drug_name[[i]])
+  }
+  
+  cdm <- generateDrugUtilisationCohortSet(
+    cdm = cdm,
+    name = table_name,
+    conceptSetList = conceptSetList,
+    summariseMode = "FirstEra",
+    daysPriorObservation = 365,
+    cohortDateRange = as.Date(c(start_date, end_date))
+  )
+  
+  raw_table <- cdm[[table_name]] %>% collect()
+  
+  return(raw_table)
+}
 
+getWaitingTimeDistribution <- function(cdm,
+                                       drug,
+                                       single_drug_cohort = NULL,
+                                       table_name = "wtd", 
+                                       start_date, 
+                                       end_date, 
+                                       prior_obs = 365
+                                       ){
+  if (!is.null(single_drug_cohort)){
+    colChecks(single_drug_cohort, c("cohort_definition_id", "subject_id", "cohort_start_date"))
+    table <- single_drug_cohort
+  } else {
+    table <- generateSingleDrugCohort(cdm = cdm, drug = drug, table_name = table_name, start_date = start_date, end_date = end_date, prior_obs = prior_obs)
+  }
+  table <- table %>% mutate(gap = cohort_start_date - as.Date(start_date))
+  n_months <- interval(as.Date(start_date), as.Date(end_date)) %/% months(1)
+  
+  p <- ggplot(table, aes(x=gap)) + 
+    geom_histogram(bins = n_months, color="black") +
+    labs(title = paste0("Waiting Time Distribution for the chosen drug(s)")) +
+    theme(axis.text.x = element_text(angle = 45, hjust=1),
+        panel.background = element_blank() ,
+        axis.line = element_line(colour = "black", size = 0.6) ,
+        panel.grid.major = element_line(color = "grey", size = 0.2, linetype = "dashed"),
+        legend.key = element_rect(fill = "transparent", colour = "transparent")) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Days after the start date") + ylab("Number of Patients") 
+return(p)
+}
 
 # ### Intake two IDs and generate two cohort sets using capr
 # generatePSSACohortDefinitions <- function (DrugId){

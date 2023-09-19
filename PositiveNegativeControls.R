@@ -38,17 +38,17 @@ getPSSA(cdm = cdm,
         cohort_table = drugCohort,
         study_time = 730)
 
-#step 3: produce a histogram plot
-getHistogram(tableCleaning(drugCohort, 730), "days")
-getHistogram(tableCleaning(drugCohort, 730), "weeks")
-getHistogram(tableCleaning(drugCohort, 730), "months")
-
 #### Alternatively, step 1 and step 2 can be done using one step
 results_pssa <- getPSSA(cdm = cdm,
                         index = list(c("amiodarone", "ingredient")), 
                         marker = list(c("levothyroxine", "ingredient")), 
                         table_name = "pssa_amiodarone_levothyroxine",
                         study_time = 730) 
+
+# produce a histogram plot
+getHistogram(results_pssa, "days")
+getHistogram(results_pssa, "weeks")
+getHistogram(results_pssa, "months")
 
 # 2. Direct factor Xa inhibitors to antidepressants
 results_pssa <- results_pssa %>%
@@ -222,4 +222,4 @@ print(negative_res_plots, newpage = FALSE)
 dev.off()
 
 #### export
-write.csv(results_pssa, "results_pssa.csv")
+write.csv(results_pssa, here(output_folder, "results_pssa.csv"))
