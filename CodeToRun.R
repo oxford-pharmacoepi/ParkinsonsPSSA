@@ -4,6 +4,7 @@ renv::activate()
 renv::restore() # this should prompt you to install the various packages required for the study
 library(CDMConnector)
 library(DBI)
+library(plyr)
 library(log4r)
 library(dplyr)
 library(dbplyr)
