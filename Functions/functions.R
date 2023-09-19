@@ -198,9 +198,21 @@ generateDrugCohort <- function(cdm, index, marker, table_name = "pssa"){
   return(raw_table)
 }
 
-##### getPSSA (complete approach)
-getPSSA <- function(index, marker, table_name = "pssa", study_time = NULL, confidence_interval_level = 0.025){
-  table <- generateDrugCohort(index = index, marker = marker, table_name = table_name)
+##### getPSSA (complete approach) 
+##### either give both index and marker names or 
+##### cohort_table (latter most preferably being generated from GenerateDrugCohort())
+getPSSA <- function(index, 
+                    marker, 
+                    cohort_table, 
+                    table_name = "pssa", 
+                    study_time = NULL, 
+                    confidence_interval_level = 0.025){
+  if (nrow(cohort_table)>0){
+    colChecks(cohort_table, c("cohort_definition_id", "subject_id", "cohort_start_date"))
+    table <- cohort_table
+  } else {
+    table <- generateDrugCohort(index = index, marker = marker, table_name = table_name)
+  }
   table_cleaned <- tableCleaning(table = table, study_time = study_time)
   csr<-crudeSequenceRatio(summaryTable(table_cleaned))
   asr<-adjustedSequenceRatio(summaryTable(table_cleaned))
