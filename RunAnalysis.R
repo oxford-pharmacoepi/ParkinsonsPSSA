@@ -15,3 +15,9 @@ results_pssa <- getPSSA(cdm = cdm,
 getHistogram(results_pssa, "days")
 
 ### Waiting Time Distribution
+getWaitingTimeDistribution(cdm = cdm,
+                           drug= list(c("amiodarone", "ingredient")),
+                           table_name = "wtd_amiodarone", 
+                           start_date = "2010-01-01", 
+                           end_date = "2022-12-31", 
+                           prior_obs = 365)
