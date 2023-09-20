@@ -398,7 +398,7 @@ crudeSequenceRatio <- function(table) {
   
 }
 
-### NSR
+### NSR (uses summary table, days_first, marker_first and index_first)
 nullSequenceRatio <- function(table, restriction = 548) {
   
   colChecks(table, c("days_first", "marker_first", "index_first"))
@@ -409,22 +409,25 @@ nullSequenceRatio <- function(table, restriction = 548) {
   numer <- 0
   denom <- 0
   
+  # The case restriction is finite: 
   if (is.finite(restriction)) {
     
     table <-
       table %>%
       mutate(
-        marker_cumsum_fwd = deltaCumulativeSum(marker_first, days_first, restriction, backwards = FALSE),
-        marker_cumsum_bwd = deltaCumulativeSum(marker_first, days_first, restriction, backwards = TRUE),
-        numerator = index_first * marker_cumsum_fwd,
-        denominator = index_first * (marker_cumsum_bwd + marker_cumsum_fwd - marker_first),
+        marker_cumsum_fwd = deltaCumulativeSum(marker_first, days_first, restriction, backwards = FALSE), # For each days_first, look back 548 (restriction) days and see how many marker_first are there
+        marker_cumsum_bwd = deltaCumulativeSum(marker_first, days_first, restriction, backwards = TRUE), # For each days_first, look forward 548 (restriction days) and see how many marker_first are there
+        numerator = index_first * marker_cumsum_fwd, 
+        denominator = index_first * (marker_cumsum_bwd + marker_cumsum_fwd - marker_first), # why the minus - mistake?
       )
     
     numer <- table %>% pull(numerator) %>% sum(.)
     denom <- table %>% pull(denominator) %>% sum(.)
     
   } else {
-    
+    # The case restriction is infinite: 
+    # numerator just looks forward indefinitely
+    # denom is just looking forward and backward indefinitely - but didn't exclude on the day, mistake?
     numer <-
       table %>%
       mutate(
