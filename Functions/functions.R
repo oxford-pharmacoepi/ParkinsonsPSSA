@@ -56,9 +56,9 @@ getHistogram <- function (pssa_output, time_scale = "weeks"){
   table <- pssa_output[[1]]
   prep <- table %>%
     mutate(gap_days = as.integer(dateMarkerDrug - dateIndexDrug)) %>%
-    mutate(gap_weeks = round((gap_days / 7),0)) %>% 
-    mutate(gap_months = round((gap_days / 31),0)) %>% 
-    mutate(`Drug Initiation Order` = ifelse(dateMarkerDrug > dateIndexDrug, "Index -> Marker", "Marker -> Index")) 
+    mutate(gap_weeks = round((gap_days / 7),2)) %>% 
+    mutate(gap_months = round((gap_days / 31),2)) %>% 
+    mutate(drug_initiation_order = ifelse(dateMarkerDrug > dateIndexDrug, "Index -> Marker", "Marker -> Index")) 
   # %>%
   #   filter(gap_weeks <= 52) %>%
   #   filter(gap_weeks >= - 52) # saw a paper where they only look at 1 year either side
@@ -77,8 +77,8 @@ getHistogram <- function (pssa_output, time_scale = "weeks"){
     max_val <- plyr::round_any(max(prep$gap_weeks), 10, f = ceiling)
     min_val <- plyr::round_any(min(prep$gap_weeks), 10, f = floor)
     
-    p <- ggplot(prep, aes(x=gap_weeks, color=`Drug Initiation Order`, fill=`Drug Initiation Order`)) + 
-      geom_histogram(bins = bins, color="black") +
+    p <- ggplot(prep, aes(x=gap_weeks, color=drug_initiation_order, fill=drug_initiation_order)) + 
+      geom_histogram(bins = bins) +
       geom_hline(yintercept=0, colour="white", size=0.5) + # this removes the green line at the bottom
       geom_vline(xintercept = 0, linewidth = 1, color = "red", linetype ="dashed") +
       #labs(title = paste0("Time difference between the initiation of index and marker drugs"))+
@@ -99,8 +99,8 @@ getHistogram <- function (pssa_output, time_scale = "weeks"){
     max_val <- plyr::round_any(max(prep$gap_days), 10, f = ceiling)
     min_val <- plyr::round_any(min(prep$gap_days), 10, f = floor)
     
-    p <- ggplot(prep, aes(x=gap_days, color=`Drug Initiation Order`, fill=`Drug Initiation Order`)) + 
-      geom_histogram(bins = bins, color="black") +
+    p <- ggplot(prep, aes(x=gap_days, color=drug_initiation_order, fill=drug_initiation_order)) + 
+      geom_histogram(bins = bins) +
       geom_hline(yintercept=0, colour="white", size=0.5) +
       geom_vline(xintercept = 0, linewidth = 1, color = "red", linetype ="dashed") +
       #labs(title = paste0("Time difference between the initiation of index and marker drugs"))+
@@ -121,8 +121,8 @@ getHistogram <- function (pssa_output, time_scale = "weeks"){
     max_val <- plyr::round_any(max(prep$gap_months), 10, f = ceiling)
     min_val <- plyr::round_any(min(prep$gap_months), 10, f = floor)
     
-    p <- ggplot(prep, aes(x=gap_months, color=`Drug Initiation Order`, fill=`Drug Initiation Order`)) + 
-      geom_histogram(bins = bins, color="black") +
+    p <- ggplot(prep, aes(x=gap_months, color=drug_initiation_order, fill=drug_initiation_order)) + 
+      geom_histogram(bins = bins) +
       geom_hline(yintercept=0, colour="white", size=0.5) +
       geom_vline(xintercept = 0, linewidth = 1, color = "red", linetype ="dashed") +
       #labs(title = paste0("Time difference between the initiation of index and marker drugs"))+
