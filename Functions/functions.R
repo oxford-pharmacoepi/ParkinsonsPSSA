@@ -426,8 +426,7 @@ nullSequenceRatio <- function(table, restriction = 548) {
     
   } else {
     # The case restriction is infinite: 
-    # numerator just looks forward indefinitely
-    # denom is just looking forward and backward indefinitely - but didn't exclude on the day, mistake?
+    # Hallas 1996 Appendix
     numer <-
       table %>%
       mutate(
