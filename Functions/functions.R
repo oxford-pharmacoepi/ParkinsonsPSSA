@@ -1,6 +1,8 @@
 ### Input a cdm table and a study period and output a cleaned version of table, so that it can be used in asr
 tableCleaning <- function(table, study_time = NULL){
   colChecks(table, c("cohort_definition_id", "subject_id", "cohort_start_date"))
+  if (!setequal((drug_cohort %>% pull(cohort_definition_id) %>% unique()), c(1,2)))
+    stop("table doesn't have the right format, cohort_definition_id should have both 1 and 2 and only 1 and 2.")
   if (is.null(study_time)){
     dat <- 
       table %>%
@@ -40,12 +42,29 @@ getConfidenceInterval <- function(table, confidence_interval_level = 0.025){
     marker_first = table %>% pull(marker_first) %>% sum(.)
   )
   
-  counts$lowerCI <- qbeta(confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
-  counts$upperCI <- qbeta(1-confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
-  
-  counts$lowerCI <- counts$lowerCI/(1-counts$lowerCI)
-  counts$upperCI <- counts$upperCI/(1-counts$upperCI)
-  
+  if (counts$index_first == 0 & counts$marker_first == 0){
+    counts$lowerCI <- counts$upperCI <- NA
+  } else if (counts$index_first == 0){
+    counts$index_first <-  0.5
+    counts$lowerCI <- qbeta(confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
+    counts$upperCI <- qbeta(1-confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
+    
+    counts$lowerCI <- counts$lowerCI/(1-counts$lowerCI)
+    counts$upperCI <- counts$upperCI/(1-counts$upperCI)
+  } else if (counts$marker_first == 0){
+    counts$marker_first <-  0.5
+    counts$lowerCI <- qbeta(confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
+    counts$upperCI <- qbeta(1-confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
+    
+    counts$lowerCI <- counts$lowerCI/(1-counts$lowerCI)
+    counts$upperCI <- counts$upperCI/(1-counts$upperCI)
+  } else {
+    counts$lowerCI <- qbeta(confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
+    counts$upperCI <- qbeta(1-confidence_interval_level, counts$index_first + 0.5, counts$marker_first + 0.5)
+    
+    counts$lowerCI <- counts$lowerCI/(1-counts$lowerCI)
+    counts$upperCI <- counts$upperCI/(1-counts$upperCI)
+  }
   return(counts)
 }
 
@@ -142,7 +161,7 @@ getHistogram <- function (pssa_output, time_scale = "weeks"){
 }
 
 #generate cohort 
-generateDrugCohortPSSA <- function(cdm, index, marker, table_name = "pssa"){
+generateDrugCohortPSSA <- function(cdm, index, marker, table_name = "pssa", prior_obs = 365, start_date, end_date){
   index_drug <- list()
   marker_drug <- list()
   
@@ -175,7 +194,9 @@ generateDrugCohortPSSA <- function(cdm, index, marker, table_name = "pssa"){
     cdm = cdm,
     name = table_name,
     conceptSetList = conceptSetList,
-    summariseMode = "FirstEra"
+    summariseMode = "FirstEra",
+    daysPriorObservation = prior_obs,
+    cohortDateRange = as.Date(c(start_date, end_date))
   )
   
   index_length <- 0
@@ -208,12 +229,16 @@ getPSSA <- function(cdm,
                     cohort_table = NULL, 
                     table_name = "pssa", 
                     study_time = NULL, 
-                    confidence_interval_level = 0.025){
+                    confidence_interval_level = 0.025, 
+                    prior_obs,
+                    start_date,
+                    end_date # set both as NA for full 
+                    ){
   if (!is.null(cohort_table)){
     colChecks(cohort_table, c("cohort_definition_id", "subject_id", "cohort_start_date"))
     table <- cohort_table
   } else {
-    table <- generateDrugCohortPSSA(cdm = cdm, index = index, marker = marker, table_name = table_name)
+    table <- generateDrugCohortPSSA(cdm = cdm, index = index, marker = marker, table_name = table_name, prior_obs = prior_obs, start_date = start_date, end_date = end_date)
   }
   table_cleaned <- tableCleaning(table = table, study_time = study_time)
   csr<-crudeSequenceRatio(summaryTable(table_cleaned))
@@ -457,12 +482,14 @@ nullSequenceRatio <- function(table, restriction = 548) {
   if (numer < 1)
     warning("NSR numerator is 0, which results in a NSR = 0, proceed with caution")
   
-  if (denom < 1)
-    stop("NSR denominator is 0, suggesting no Marker Drug -> Index Drug or Index Drug -> Marker Drug events")
-  
-  a <- numer / denom
-  
-  nullSequenceRatio <- a / (1 - a)
+  if (denom < 1){
+    warning("NSR denominator is 0, suggesting no Marker Drug -> Index Drug or Index Drug -> Marker Drug events")
+    nullSequenceRatio <- NA
+  } else {
+    a <- numer / denom
+    
+    nullSequenceRatio <- a / (1 - a)
+  }
   
   return(nullSequenceRatio)
   
