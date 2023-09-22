@@ -1,7 +1,7 @@
 ### Input a cdm table and a study period and output a cleaned version of table, so that it can be used in asr
 tableCleaning <- function(table, study_time = NULL){
-  colChecks(table, c("cohort_definition_id", "subject_id", "cohort_start_date"))
-  if (!setequal((drug_cohort %>% pull(cohort_definition_id) %>% unique()), c(1,2)))
+  colChecks(table, c("cohort_definition_id", "cohort_start_date"))
+  if (!setequal((table %>% pull(cohort_definition_id) %>% unique()), c(1,2)))
     stop("table doesn't have the right format, cohort_definition_id should have both 1 and 2 and only 1 and 2.")
   if (is.null(study_time)){
     dat <- 
@@ -366,6 +366,8 @@ getPSSAStrata <- function(cdm,
   return(strata_results)
 }
 
+
+
 # ### Intake two IDs and generate two cohort sets using capr
 # generatePSSACohortDefinitions <- function (DrugId){
 #   cohort(
@@ -373,6 +375,7 @@ getPSSAStrata <- function(cdm,
 #                   primaryCriteriaLimit = "First"),
 #     exit = exit(endStrategy = fixedExit(index = "startDate", offsetDays = 0L)))
 # }
+
 
 ### Credit to Ty - checking if the dataframe has the required columns
 colChecks <- function(df, cols) {
@@ -396,13 +399,10 @@ colChecks <- function(df, cols) {
 # and produces a summary table with one column indicating how many days it has been since the the very first drug
 # and the number of cases where the marker was prescribed first and the index was prescribed first.
 
-summaryTable <- function(table, subject_id = "subject_id", dateIndexDrug = "dateIndexDrug", dateMarkerDrug = "dateMarkerDrug") {
-  
-  colChecks(table, c(dateIndexDrug, dateMarkerDrug))
+summaryTable <- function(table, dateIndexDrug = "dateIndexDrug", dateMarkerDrug = "dateMarkerDrug") {
   
   # allocating column names
   column_names <- colnames(table)
-  column_names[column_names == subject_id] <- "subject_id"
   column_names[column_names == dateIndexDrug] <- "dateIndexDrug"
   column_names[column_names == dateMarkerDrug] <- "dateMarkerDrug"
   colnames(table) <- column_names
