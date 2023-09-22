@@ -39,3 +39,10 @@ results_subset <- getPSSASubset(cdm = cdm,
                                 study_time = 365)
 
 ### subset by sex and/or age
+stratified_pssa_results <- getPSSAStrata(cdm = cdm,
+                                         ageGroup = list(c(0,50), c(50,150), c(0,150)),
+                                         sex = c("Male", "Female", "Both"),
+                                         index = list(c("amiodarone", "ingredient")), 
+                                         marker = list(c("levothyroxine", "ingredient")),
+                                         start_date = NA,
+                                         end_date = NA)
