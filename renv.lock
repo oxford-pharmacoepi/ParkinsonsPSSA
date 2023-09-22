@@ -174,6 +174,33 @@
       ],
       "Hash": "fa657e9966d42cb0032816a491a1bf29"
     },
+    "IncidencePrevalence": {
+      "Package": "IncidencePrevalence",
+      "Version": "0.4.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "CDMConnector",
+        "DBI",
+        "R",
+        "checkmate",
+        "cli",
+        "dbplyr",
+        "dplyr",
+        "ggplot2",
+        "glue",
+        "lubridate",
+        "magrittr",
+        "purrr",
+        "rlang",
+        "scales",
+        "stringr",
+        "tidyr",
+        "tidyselect",
+        "zip"
+      ],
+      "Hash": "66509f8af805249e93775a24bb0bab02"
+    },
     "MASS": {
       "Package": "MASS",
       "Version": "7.3-60",

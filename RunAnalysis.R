@@ -21,3 +21,21 @@ getWaitingTimeDistribution(cdm = cdm,
                            start_date = "2010-01-01", 
                            end_date = "2022-12-31", 
                            prior_obs = 365)
+
+### Subset by JSON
+cohortSet <- readCohortSet(
+  path = here("1_InstantiateCohorts", "CohortPSSA")
+)
+cdm <- generateCohortSet(
+  cdm = cdm, cohortSet = cohortSet, name = "pssa_subset",
+  overwrite = TRUE
+)
+
+results_subset <- getPSSASubset(cdm = cdm, 
+                                index = list(c("amiodarone", "ingredient")), 
+                                marker = list(c("levothyroxine", "ingredient")),
+                                subset_name = "pssa_subset",
+                                subset_id = 1,
+                                study_time = 365)
+
+### subset by sex and/or age
