@@ -160,7 +160,7 @@ getHistogram <- function (pssa_output, time_scale = "weeks"){
   } 
 }
 
-#generate cohort 
+#generate drug cohort using DrugUtilisation - to be fed into getPSSA()
 generateDrugCohortPSSA <- function(cdm, index, marker, table_name = "pssa", prior_obs = 365, start_date, end_date){
   index_drug <- list()
   marker_drug <- list()
@@ -243,7 +243,7 @@ getPSSA <- function(cdm,
   table_cleaned <- tableCleaning(table = table, study_time = study_time)
   csr<-crudeSequenceRatio(summaryTable(table_cleaned))
   asr<-adjustedSequenceRatio(summaryTable(table_cleaned))
-  counts <- getConfidenceInterval(summaryTable(table_cleaned))
+  counts <- getConfidenceInterval(summaryTable(table_cleaned), confidence_interval_level = confidence_interval_level)
   
   results <- tibble(name = table_name, 
                     csr = csr, 
@@ -257,6 +257,7 @@ getPSSA <- function(cdm,
 }
 
 ### Waiting Time Distribution
+# Generate a single drug cohort, similar to generateDrugCohortPSSA()
 generateSingleDrugCohort <- function(cdm, drug, table_name = "wtd", start_date, end_date, prior_obs = 365){
   drug_name <- list()
   
@@ -278,7 +279,7 @@ generateSingleDrugCohort <- function(cdm, drug, table_name = "wtd", start_date, 
     name = table_name,
     conceptSetList = conceptSetList,
     summariseMode = "FirstEra",
-    daysPriorObservation = 365,
+    daysPriorObservation = prior_obs,
     cohortDateRange = as.Date(c(start_date, end_date))
   )
   
@@ -287,6 +288,7 @@ generateSingleDrugCohort <- function(cdm, drug, table_name = "wtd", start_date, 
   return(raw_table)
 }
 
+### waiting time distribution
 getWaitingTimeDistribution <- function(cdm,
                                        drug,
                                        single_drug_cohort = NULL,
@@ -318,13 +320,13 @@ return(p)
 }
 
 # pssa based on a subset of a condition - requires predefined jsons to be instantiated
-getPSSASubset <- function(cdm, index, marker, subset_name, subset_id, cohort_table = NULL, table_name = "pssa", study_time = NULL, confidence_interval_level = 0.025){
+# inspired by IncidencePrevalence
+getPSSASubset <- function(cdm, index, marker, subset_name, subset_id, table_name = "pssa", study_time = NULL, confidence_interval_level = 0.025){
   cdm[["subset"]] <- cdm[[subset_name]] %>% filter(cohort_definition_id == subset_id)
   subset_cdm <- cdmSubsetCohort(cdm, "subset")
   subset_result <- getPSSA(cdm = subset_cdm,
                            index = index, 
                            marker = marker,
-                           cohort_table = cohort_table, 
                            table_name = table_name, 
                            study_time = study_time, 
                            confidence_interval_level = confidence_interval_level) 
@@ -354,6 +356,7 @@ getPSSAStrata <- function(cdm,
                                           index = index, 
                                           marker = marker,
                                           prior_obs = prior_obs,
+                                          table_name = table_name,
                                           start_date = start_date,
                                           end_date = end_date) %>%
       filter(subject_id %in% subject_ids)
@@ -365,17 +368,6 @@ getPSSAStrata <- function(cdm,
   }
   return(strata_results)
 }
-
-
-
-# ### Intake two IDs and generate two cohort sets using capr
-# generatePSSACohortDefinitions <- function (DrugId){
-#   cohort(
-#     entry = entry(drug(cs(descendants(DrugId))),
-#                   primaryCriteriaLimit = "First"),
-#     exit = exit(endStrategy = fixedExit(index = "startDate", offsetDays = 0L)))
-# }
-
 
 ### Credit to Ty - checking if the dataframe has the required columns
 colChecks <- function(df, cols) {
