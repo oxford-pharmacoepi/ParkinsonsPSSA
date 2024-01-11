@@ -20,12 +20,12 @@ if (!dir.exists(plotsFolder)) {
 ################################################################################################
 #1. Amiodarone to Levothyroxine
 #step 1: generate the necessary drug cohort using generateDrugCohort()
-drugCohort <- generateDrugCohort(cdm = cdm, index = list(c("amiodarone", "ingredient")), marker = list(c("levothyroxine", "ingredient")))
+drugCohort <- generateDrugCohortPSSA(cdm = cdm, index = list(c("amiodarone", "ingredient")), marker = list(c("levothyroxine", "ingredient")), start_date = NA, end_date = NA)
 
 #step 2: create CSR, ASR and CI
-csr<-crudeSequenceRatio(summaryTable(tableCleaning(drugCohort, 730)))
-asr<-adjustedSequenceRatio(summaryTable(tableCleaning(drugCohort, 730)))
-counts <- getConfidenceInterval(summaryTable(tableCleaning(drugCohort, 730)))
+csr<-crudeSequenceRatio(tableCleaning(drugCohort, 730))
+asr<-adjustedSequenceRatio(tableCleaning(drugCohort, 730))
+counts <- getConfidenceInterval(tableCleaning(drugCohort, 730))
 
 results <- tibble(name = "pssa_amiodarone_levothyroxine", 
                   csr = csr, 
@@ -39,16 +39,16 @@ getPSSA(cdm = cdm,
         study_time = 730)
 
 #### Alternatively, step 1 and step 2 can be done using one step
-results_pssa <- getPSSA(cdm = cdm,
+results_pssa_iqvia <- getPSSA(cdm = cdm,
                         index = list(c("amiodarone", "ingredient")), 
                         marker = list(c("levothyroxine", "ingredient")), 
                         table_name = "pssa_amiodarone_levothyroxine",
                         study_time = 730) 
 
 # produce a histogram plot
-getHistogram(results_pssa, "days")
-getHistogram(results_pssa, "weeks")
-getHistogram(results_pssa, "months")
+getHistogram(results_pssa_iqvia, "days")
+getHistogram(results_pssa_iqvia, "weeks")
+getHistogram(results_pssa_iqvia, "months")
 
 # 2. Direct factor Xa inhibitors to antidepressants
 results_pssa <- results_pssa %>%
