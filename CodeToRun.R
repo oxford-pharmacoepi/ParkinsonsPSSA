@@ -1,4 +1,4 @@
-devtools::install_github("oxford-pharmacoepi/CohortSymmetry")
+#devtools::install_github("oxford-pharmacoepi/CohortSymmetry")
 library(CDMConnector)
 library(DBI)
 library(plyr)
