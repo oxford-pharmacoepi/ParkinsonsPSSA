@@ -2,11 +2,37 @@ cdm <- CDMConnector::cdm_from_con(
   con = db,
   cdm_schema = cdm_database_schema,
   write_schema = results_database_schema,
-  cohort_tables = c("levodopa", "amantadine", "parkinson_subtypes", "Dopamine_agonists", "MAOB_inhibitors", "COMT_inhibitors", "lithium", "levothyroxine", "amiodarone", "ccb", "antidepressants", "ANTIEMETICS", "ANTIEPILEPTICS")
+  cohort_tables = c("levodopa", "amantadine", "parkinson_subtypes", "Dopamine_agonists", "MAOB_inhibitors", "COMT_inhibitors", "lithium", "levothyroxine", "amiodarone", "ccb", "antidepressants", "ANTIEMETICS")
 )
 
 ################################################################################################
 #### in parkinsonism patients
+## Positive Controls
+cdm[["levothyroxine2"]] <- cdm[["parkinson_subtypes"]] %>% 
+  dplyr::inner_join(cohortSet(cdm[["parkinson_subtypes"]]), copy = T, by = "cohort_definition_id") %>% 
+  dplyr::filter(cohort_name == "Parkinsonism") %>% 
+  dplyr::inner_join(cdm[["levothyroxine"]] %>% dplyr::select(-cohort_definition_id) %>% dplyr::rename(drug_start_date = cohort_start_date, drug_end_date = cohort_end_date), by = "subject_id") %>% 
+  # dplyr::filter(drug_start_date >= cohort_start_date) %>% 
+  dplyr::mutate(cohort_definition_id = 1) %>% 
+  dplyr::select(-cohort_start_date, -cohort_end_date, -cohort_name) %>% 
+  dplyr::rename(cohort_start_date = drug_start_date, 
+                cohort_end_date = drug_end_date) %>% 
+  dplyr::mutate(cohort_name = "Levothyroxine") %>% 
+  CDMConnector::computeQuery()
+
+cdm[["amiodarone2"]] <- cdm[["parkinson_subtypes"]] %>% 
+  dplyr::inner_join(cohortSet(cdm[["parkinson_subtypes"]]), copy = T, by = "cohort_definition_id") %>% 
+  dplyr::filter(cohort_name == "Parkinsonism") %>% 
+  dplyr::inner_join(cdm[["amiodarone"]] %>% dplyr::select(-cohort_definition_id) %>% dplyr::rename(drug_start_date = cohort_start_date, drug_end_date = cohort_end_date), by = "subject_id") %>% 
+  # dplyr::filter(drug_start_date >= cohort_start_date) %>% 
+  dplyr::mutate(cohort_definition_id = 1) %>% 
+  dplyr::select(-cohort_start_date, -cohort_end_date, -cohort_name) %>% 
+  dplyr::rename(cohort_start_date = drug_start_date, 
+                cohort_end_date = drug_end_date) %>% 
+  dplyr::mutate(cohort_name = "Amiodarone") %>% 
+  CDMConnector::computeQuery()
+
+##Antiparkinson drugs
 cdm[["levodopa2"]] <- cdm[["parkinson_subtypes"]] %>% 
   dplyr::inner_join(cohortSet(cdm[["parkinson_subtypes"]]), copy = T, by = "cohort_definition_id") %>% 
   dplyr::filter(cohort_name == "Parkinsonism") %>% 
@@ -112,7 +138,7 @@ pathway_results <- pathway_results %>%
                 asr = round(asr, digits = 2),
                 lowerCI = round(lowerCI, digits = 2),
                 upperCI = round(upperCI, digits = 2))
-########################################################
+#################################################################################################
 #################################################################################################
 ### in general population
 cdm[["parkinson_drugs_overall"]] <- union_all(cdm[["levodopa"]] %>% dplyr::mutate(cohort_definition_id = 1, cohort_name = "Levodopa"), 
@@ -164,6 +190,35 @@ pathway_results_overall <- pathway_results_overall %>%
 
 write.xlsx(pathway_results_overall, "PathwayResults_gen_pop.xlsx")
 write.xlsx(pathway_results, "PathwayResults_Parkinsonism.xlsx")
+
+###############################################################################################
+#Positive control
+cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
+                                         name = "amiodarone_thyroxine",
+                                         dateRange = as.Date(c("2008-01-01", "2021-12-31")),
+                                         indexTable = "amiodarone",
+                                         markerTable = "levothyroxine",
+                                         daysPriorObservation = 365,
+                                         indexWashout = 365,
+                                         markerWashout = 365,
+                                         timeGap = 365)
+
+amiodarone_levothyroxin <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
+                                                             outcomeTable = "amiodarone_thyroxine")
+
+cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
+                                         name = "amiodarone_thyroxine_parkinson",
+                                         dateRange = as.Date(c("2008-01-01", "2021-12-31")),
+                                         indexTable = "amiodarone2",
+                                         markerTable = "levothyroxine2",
+                                         daysPriorObservation = 365,
+                                         indexWashout = 365,
+                                         markerWashout = 365,
+                                         timeGap = 365)
+
+amiodarone_levothyroxin_parkinson <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
+                                                             outcomeTable = "amiodarone_thyroxine_parkinson")
+
 ###############################################################################################
 ### others
 cdm[["lithium"]] <- cdm[["lithium"]] %>% 
