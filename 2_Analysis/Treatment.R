@@ -223,7 +223,7 @@ positive_control <- amiodarone_levothyroxin %>%
   dplyr::mutate(comment = "In the general population") %>% 
   rbind(amiodarone_levothyroxin_parkinson %>% dplyr::mutate(comment = "In the Parkinson's population")) %>% 
   dplyr::mutate(index_name = "Amiodarone",
-                marker_name = "Levothyroxin") %>% 
+                marker_name = "Levothyroxine") %>% 
   dplyr::select(index_id, index_name, marker_id, marker_name, index_first, marker_first, csr, asr, lowerCI, upperCI, comment, cdm_name)
 ###############################################################################################
 ### others
