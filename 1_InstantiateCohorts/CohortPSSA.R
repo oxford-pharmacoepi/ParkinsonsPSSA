@@ -39,89 +39,134 @@ cdm <- generateDrugUtilisationCohortSet(
 return(cdm)
 }
 #################################################################################
-####positive control
-# amiodarone
+#### positive control
+# amiodarone 
+print(paste0("Generating amiodarone at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("amiodarone", "ingredient")),
                            table_name = "amiodarone",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
+print(paste0("Generated amiodarone at ", Sys.time()))
 
 # levothyroxine
+print(paste0("Generating levothyroxine at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("levothyroxine", "ingredient")),
                            table_name = "levothyroxine",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
+print(paste0("Generated levothyroxine at ", Sys.time()))
+
+####negative control
+# allpurinol
+print(paste0("Generating allpurinol at ", Sys.time()))
+cdm <- getSingleDrugCohort(cdm = cdm,
+                           drug = list(c("allopurinol", "ingredient")),
+                           table_name = "allopurinol",
+                           start_date = as.Date("2008-01-01"),
+                           end_date = as.Date("2021-12-31"))
+print(paste0("Generated allpurinol at ", Sys.time()))
 
 # Levodopa
+print(paste0("Generating levodopa at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("levodopa", "ingredient")),
                            table_name = "levodopa",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
+print(paste0("Generated levodopa at ", Sys.time()))
 
 # Dopamine Agonists
+print(paste0("Generating dopamine agonists at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("Dopamine agonists", "ATC 4th")),
                            table_name = "Dopamine_agonists",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
-
+print(paste0("Generated dopamine agonists at ", Sys.time()))
 
 # Amantadine
+print(paste0("Generating amantadine at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("amantadine", "ingredient")),
                            table_name = "amantadine",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
+print(paste0("Generated amantadine at ", Sys.time()))
 
 #MAOB
+print(paste0("Generating MAOB at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("Monoamine oxidase B inhibitors", "ATC 4th")),
                            table_name = "MAOB_inhibitors",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
+print(paste0("Generated MAOB at ", Sys.time()))
 
 #COMT
+print(paste0("Generating COMT at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("levodopa, decarboxylase inhibitor and COMT inhibitor; oral", "ATC 5th")),
                            table_name = "COMT_inhibitors",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
+print(paste0("Generated COMT at ", Sys.time()))
 
 ################################################################################################
-#lithium
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("lithium", "ATC 4th")),
-                           table_name = "lithium",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
+# #lithium
+# cdm <- getSingleDrugCohort(cdm = cdm,
+#                            drug = list(c("lithium", "ATC 4th")),
+#                            table_name = "lithium",
+#                            start_date = as.Date("2008-01-01"),
+#                            end_date = as.Date("2021-12-31"))
+# 
+# #CCB
+# cdm <- getSingleDrugCohort(cdm = cdm,
+#                            drug = list(c("CALCIUM CHANNEL BLOCKERS", "ATC 2nd")),
+#                            table_name = "ccb",
+#                            start_date = as.Date("2008-01-01"),
+#                            end_date = as.Date("2021-12-31"))
+# 
+# #ANTIDEPRESSANTS
+# cdm <- getSingleDrugCohort(cdm = cdm,
+#                            drug = list(c("ANTIDEPRESSANTS", "ATC 3rd")),
+#                            table_name = "antidepressants",
+#                            start_date = as.Date("2008-01-01"),
+#                            end_date = as.Date("2021-12-31"))
+# 
+# #ANTIEMETICS
+# cdm <- getSingleDrugCohort(cdm = cdm,
+#                            drug = list(c("ANTIEMETICS AND ANTINAUSEANTS", "ATC 2nd")),
+#                            table_name = "ANTIEMETICS",
+#                            start_date = as.Date("2008-01-01"),
+#                            end_date = as.Date("2021-12-31"))
+# 
+# #ANTIEPILEPTICS
+# cdm <- getSingleDrugCohort(cdm = cdm,
+#                            drug = list(c("ANTIEPILEPTICS", "ATC 3rd")),
+#                            table_name = "ANTIEPILEPTICS",
+#                            start_date = as.Date("2008-01-01"),
+#                            end_date = as.Date("2021-12-31"))
 
-#CCB
+######## potential antiparkinson cascades
+# CCB
 cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("CALCIUM CHANNEL BLOCKERS", "ATC 2nd")),
+                           drug = list(c("cinnarizine", "ingredient"), c("flunarizine", "ingredient")),
                            table_name = "ccb",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
 
-#ANTIDEPRESSANTS
+# Dopamine depleters 
 cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("ANTIDEPRESSANTS", "ATC 3rd")),
-                           table_name = "antidepressants",
+                           drug = list(c("tetrabenazine", "ingredient"), c("reserpine", "ingredient")),
+                           table_name = "dopamine_depleters",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
 
-#ANTIEMETICS
+# Atypical antipsychotics 
 cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("ANTIEMETICS AND ANTINAUSEANTS", "ATC 2nd")),
-                           table_name = "ANTIEMETICS",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-
-#ANTIEPILEPTICS
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("ANTIEPILEPTICS", "ATC 3rd")),
-                           table_name = "ANTIEPILEPTICS",
+                           drug = list(c("risperidone", "ingredient"), c("olanzapine", "ingredient"), c("ziprasidone", "ingredient"), c("aripiprazole", "ingredient")),
+                           table_name = "atypical_antipsychotics",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
