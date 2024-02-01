@@ -151,6 +151,7 @@ print(paste0("Generated COMT at ", Sys.time()))
 
 ######## potential antiparkinson cascades
 # CCB
+print(paste0("Generating CCB at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("cinnarizine", "ingredient"), c("flunarizine", "ingredient")),
                            table_name = "ccb",
@@ -158,6 +159,7 @@ cdm <- getSingleDrugCohort(cdm = cdm,
                            end_date = as.Date("2021-12-31"))
 
 # Dopamine depleters 
+print(paste0("Generating Dopamine Depleters at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("tetrabenazine", "ingredient"), c("reserpine", "ingredient")),
                            table_name = "dopamine_depleters",
@@ -165,8 +167,78 @@ cdm <- getSingleDrugCohort(cdm = cdm,
                            end_date = as.Date("2021-12-31"))
 
 # Atypical antipsychotics 
+print(paste0("Generating Atypical Antipsychotics at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("risperidone", "ingredient"), c("olanzapine", "ingredient"), c("ziprasidone", "ingredient"), c("aripiprazole", "ingredient")),
                            table_name = "atypical_antipsychotics",
+                           start_date = as.Date("2008-01-01"),
+                           end_date = as.Date("2021-12-31"))
+
+# Antiemetics 
+print(paste0("Generating Antiemetics at ", Sys.time()))
+cdm <- getSingleDrugCohort(cdm = cdm,
+                           drug = list(c("metoclopramide", "ingredient"), c("levosulpiride", "ingredient"), c("clebopride", "ingredient")),
+                           table_name = "antiemetics",
+                           start_date = as.Date("2008-01-01"),
+                           end_date = as.Date("2021-12-31"))
+
+# Typical antipsychotics 
+print(paste0("Generating Typical antipsychotics at ", Sys.time()))
+cdm <- getSingleDrugCohort(cdm = cdm,
+                           drug = list(c("chlorpromazine", "ingredient"), 
+                                       c("prochlorperazine", "ingredient"), 
+                                       c("perphenazine", "ingredient"), 
+                                       c("fluphenazine", "ingredient"), 
+                                       c("promethazine", "ingredient"), 
+                                       c("haloperidol", "ingredient"),
+                                       c("pimozide", "ingredient"), 
+                                       c("sulpiride", "ingredient")),
+                           table_name = "typical_antipsychotics",
+                           start_date = as.Date("2008-01-01"),
+                           end_date = as.Date("2021-12-31"))
+
+###########################################################################
+# Atypical antipsychotics 
+print(paste0("Generating Atypical antipsychotics at ", Sys.time()))
+cdm <- getSingleDrugCohort(cdm = cdm,
+                           drug = list(c("clozapine", "ingredient"), 
+                                       c("quetiapine", "ingredient")),
+                           table_name = "atypical_antipsychotics",
+                           start_date = as.Date("2008-01-01"),
+                           end_date = as.Date("2021-12-31"))
+
+# Mood stabilizer  
+print(paste0("Generating Mood stabilizer at ", Sys.time()))
+cdm <- getSingleDrugCohort(cdm = cdm,
+                           drug = list(c("lithium", "ingredient")),
+                           table_name = "mood_stabilizer",
+                           start_date = as.Date("2008-01-01"),
+                           end_date = as.Date("2021-12-31"))
+
+# Antidepressant 
+print(paste0("Generating Antidepressant at ", Sys.time()))
+cdm <- getSingleDrugCohort(cdm = cdm,
+                           drug = list(c("citalopram", "ingredient"),
+                                       c("fluoxetine", "ingredient"),
+                                       c("praoxetine", "ingredient"),
+                                       c("sertraline", "ingredient")),
+                           table_name = "antidepressant",
+                           start_date = as.Date("2008-01-01"),
+                           end_date = as.Date("2021-12-31"))
+
+# Antiepileptic drugs 
+print(paste0("Generating Antiepileptic drugs at ", Sys.time()))
+cdm <- getSingleDrugCohort(cdm = cdm,
+                           drug = list(c("Volpric Acid...", "ingredient"),
+                                       c("phenytoin", "ingredient")),
+                           table_name = "antidepressant",
+                           start_date = as.Date("2008-01-01"),
+                           end_date = as.Date("2021-12-31"))
+
+# Antiemetics Infreqeuncy
+print(paste0("Generating Infrequent Antiemetics at ", Sys.time()))
+cdm <- getSingleDrugCohort(cdm = cdm,
+                           drug = list(c("domperidone", "ingredient"), c("itopride", "ingredient"), c("clebopride", "ingredient")),
+                           table_name = "infreq_antiemetics",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
