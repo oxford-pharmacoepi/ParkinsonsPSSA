@@ -1,5 +1,3 @@
-#### admiodarone to levothyroxine 
-
 ###### Parkinsonism subtypes
 outcome_cohorts_subtypes <- readCohortSet(here(
   "1_InstantiateCohorts",
@@ -38,6 +36,20 @@ cdm <- generateDrugUtilisationCohortSet(
 
 return(cdm)
 }
+
+### dopamine agonists
+outcome_cohorts_comt <- readCohortSet(here(
+  "1_InstantiateCohorts",
+  "CohortPSSA",
+  "comt_inhibitors"
+))
+
+cdm <- generateCohortSet(cdm = cdm, 
+                         cohortSet = outcome_cohorts_da,
+                         name = "dopamine_agonists", 
+                         overwrite = TRUE
+)
+
 #################################################################################
 #### positive control
 # amiodarone 
