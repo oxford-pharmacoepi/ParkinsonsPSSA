@@ -4,8 +4,17 @@ cdm <- CDMConnector::cdm_from_con(
   write_schema = c("schema" = results_database_schema, 
                    "prefix" = stem_table),
   cdm_name = db.name,
-  cohort_tables = c("parkinson_subtypes", "amiodarone", "levothyroxine", "allopurinol", "levodopa", "Dopamine_agonists", "MAOB_inhibitors", "amantadine", "COMT_inhibitors", "ccb", "dopamine_depleters", "antiemetics", "typical_antipsychotics")
-) # need atypical_antipsychotics
+  cohort_tables = c("parkinson_subtypes", "amiodarone", "levothyroxine", "allopurinol", "levodopa", "MAOB_inhibitors", "amantadine", "COMT_inhibitors", "ccb", "dopamine_depleters", "antiemetics", "atypical_antipsychotics", "typical_antipsychotics")
+) #"Dopamine_agonists",
+
+cdm <- CDMConnector::cdm_from_con(
+  con = db,
+  cdm_schema = cdm_database_schema,
+  write_schema = c("schema" = results_database_schema, 
+                   "prefix" = stem_table),
+  cdm_name = db.name,
+  cohort_tables = c("parkinson_subtypes", "amiodarone", "levothyroxine", "allopurinol", "levodopa", "amantadine", "ccb", "dopamine_depleters", "antiemetics", "atypical_antipsychotics", "typical_antipsychotics")
+)
 
 ################################################################################################
 #                                                                                              #
@@ -26,6 +35,7 @@ singleDrugCohortConditionStrata <- function(cdm,
   if(gap_after == Inf){
     gap_after <- 999999999999999999999
   }
+  
   cdm[["condition_cohort_temp"]] <- cdm[[condition_cohort_table]] %>% 
     dplyr::inner_join(cohortSet(cdm[[condition_cohort_table]]), copy = T, by = "cohort_definition_id") %>% 
     dplyr::filter(cohort_name == condition_cohort_name) %>% 

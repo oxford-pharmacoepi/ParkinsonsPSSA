@@ -81,7 +81,7 @@ print(paste0("Generated levodopa at ", Sys.time()))
 print(paste0("Generating dopamine agonists at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("Dopamine agonists", "ATC 4th")),
-                           table_name = "Dopamine_agonists",
+                           table_name = "dopamine_agonists",
                            start_date = as.Date("2008-01-01"),
                            end_date = as.Date("2021-12-31"))
 print(paste0("Generated dopamine agonists at ", Sys.time()))
@@ -121,12 +121,12 @@ print(paste0("Generated COMT at ", Sys.time()))
 #                            start_date = as.Date("2008-01-01"),
 #                            end_date = as.Date("2021-12-31"))
 # 
-# #CCB
-# cdm <- getSingleDrugCohort(cdm = cdm,
-#                            drug = list(c("CALCIUM CHANNEL BLOCKERS", "ATC 2nd")),
-#                            table_name = "ccb",
-#                            start_date = as.Date("2008-01-01"),
-#                            end_date = as.Date("2021-12-31"))
+#CCB
+cdm <- getSingleDrugCohort(cdm = cdm,
+                           drug = list(c("CALCIUM CHANNEL BLOCKERS", "ATC 2nd")),
+                           table_name = "ccb_atc2",
+                           start_date = as.Date("2008-01-01"),
+                           end_date = as.Date("2021-12-31"))
 # 
 # #ANTIDEPRESSANTS
 # cdm <- getSingleDrugCohort(cdm = cdm,
