@@ -38,6 +38,19 @@ return(cdm)
 }
 
 ### dopamine agonists
+outcome_cohorts_da <- readCohortSet(here(
+  "1_InstantiateCohorts",
+  "CohortPSSA",
+  "dopamine_agonists"
+))
+
+cdm <- generateCohortSet(cdm = cdm, 
+                         cohortSet = outcome_cohorts_da,
+                         name = "dopamine_agonists", 
+                         overwrite = TRUE
+)
+
+### comt inhibitors
 outcome_cohorts_comt <- readCohortSet(here(
   "1_InstantiateCohorts",
   "CohortPSSA",
@@ -45,8 +58,21 @@ outcome_cohorts_comt <- readCohortSet(here(
 ))
 
 cdm <- generateCohortSet(cdm = cdm, 
-                         cohortSet = outcome_cohorts_da,
-                         name = "dopamine_agonists", 
+                         cohortSet = outcome_cohorts_comt,
+                         name = "comt_inhibitors", 
+                         overwrite = TRUE
+)
+
+### maob inhibitors
+outcome_cohorts_maob <- readCohortSet(here(
+  "1_InstantiateCohorts",
+  "CohortPSSA",
+  "maob_inhibitors"
+))
+
+cdm <- generateCohortSet(cdm = cdm, 
+                         cohortSet = outcome_cohorts_maob,
+                         name = "maob_inhibitors", 
                          overwrite = TRUE
 )
 
