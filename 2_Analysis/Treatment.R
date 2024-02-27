@@ -7,6 +7,15 @@ cdm <- CDMConnector::cdm_from_con(
   cohort_tables = c("parkinson_subtypes", "amiodarone", "levothyroxine", "allopurinol", "levodopa", "maob_inhibitors", "amantadine", "dopamine_agonists", "comt_inhibitors", "ccb", "dopamine_depleters", "antiemetics", "atypical_antipsychotics", "typical_antipsychotics")
 ) 
 
+cdm <- CDMConnector::cdm_from_con(
+  con = db,
+  cdm_schema = cdm_database_schema,
+  write_schema = c("schema" = results_database_schema, 
+                   "prefix" = stem_table),
+  cdm_name = db.name,
+  cohort_tables = c("amiodarone", "levothyroxine")
+) 
+
 ################################################################################################
 #                                                                                              #
 #                                       in PD populations                                      #
@@ -153,10 +162,7 @@ cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
                                          dateRange = as.Date(c("2008-01-01", "2021-12-31")),
                                          indexTable = "parkinson_drugs",
                                          markerTable = "parkinson_drugs",
-                                         daysPriorObservation = 365,
-                                         indexWashout = 365,
-                                         markerWashout = 365,
-                                         timeGap = 730)
+                                         combinationWindow = c(0, 730))
 
 pathway_results <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
                                                      outcomeTable = "drug_pathway_parkinson")
@@ -240,9 +246,7 @@ cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
                                          indexTable = "amiodarone",
                                          markerTable = "levothyroxine",
                                          daysPriorObservation = 365,
-                                         indexWashout = 365,
-                                         markerWashout = 365,
-                                         timeGap = 365)
+                                         washoutWindow = 365)
 
 amiodarone_levothyroxine <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
                                                              outcomeTable = "amiodarone_thyroxine")
@@ -275,11 +279,7 @@ cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
                                          name = "thyroxine_allopurinol",
                                          dateRange = as.Date(c("2008-01-01", "2021-12-31")),
                                          indexTable = "levothyroxine",
-                                         markerTable = "allopurinol",
-                                         daysPriorObservation = 365,
-                                         indexWashout = 365,
-                                         markerWashout = 365,
-                                         timeGap = 365)
+                                         markerTable = "allopurinol")
 
 levothyroxine_allopurinol <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
                                                                outcomeTable = "thyroxine_allopurinol")
