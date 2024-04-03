@@ -131,15 +131,9 @@
     },
     "DrugUtilisation": {
       "Package": "DrugUtilisation",
-      "Version": "0.5.0",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "Remotes": "darwin-eu-dev/PatientProfiles",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "DrugUtilisation",
-      "RemoteUsername": "darwin-eu-dev",
-      "RemoteRef": "omopgenerics",
-      "RemoteSha": "e2d5f77938b3ebd4338e62f0a904dde5f2c487c5",
+      "Version": "0.5.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "CDMConnector",
         "DBI",
@@ -151,6 +145,7 @@
         "dbplyr",
         "dplyr",
         "glue",
+        "lifecycle",
         "lubridate",
         "magrittr",
         "omopgenerics",
@@ -160,7 +155,7 @@
         "tidyr",
         "visOmopResults"
       ],
-      "Hash": "33562d0b56d1251a328241e936de9a30"
+      "Hash": "d3c2966cb417aff0724ca470123dc52c"
     },
     "IncidencePrevalence": {
       "Package": "IncidencePrevalence",
