@@ -1,4 +1,5 @@
 ###### Parkinsonism subtypes
+print(paste0("Instantiating Parkinsonism subtypes cohorts at ", Sys.time()))
 outcome_cohorts_subtypes <- readCohortSet(here(
   "1_InstantiateCohorts",
   "CohortPSSA"
@@ -10,110 +11,13 @@ cdm <- generateCohortSet(cdm = cdm,
                          overwrite = TRUE
 )
 
-# functions
-getSingleDrugCohort <- function(cdm, drug, table_name, start_date, end_date){
-drug_name <- list()
-
-for (i in (1: length(drug))){
-  if (drug[[i]][2] == "ingredient"){
-    drug_name[[i]] <- getDrugIngredientCodes(cdm = cdm, name = drug[[i]][1])
-  } else {
-    drug_name[[i]] <- getATCCodes(cdm = cdm, name = drug[[i]][1], level = c(drug[[i]][2]))
-  }
-}
-
-conceptSet <- c()
-for (i in (1:length(drug_name))){
-  conceptSet <- c(conceptSet, drug_name[[i]])
-}
-
-cdm <- generateDrugUtilisationCohortSet(
-  cdm = cdm,
-  name = table_name,
-  conceptSet = conceptSet,
-  cohortDateRange = as.Date(c(start_date, end_date))
-)
-
-return(cdm)
-}
-
-### dopamine agonists
-outcome_cohorts_da <- readCohortSet(here(
-  "1_InstantiateCohorts",
-  "CohortPSSA",
-  "dopamine_agonists"
-))
-
-cdm <- generateCohortSet(cdm = cdm, 
-                         cohortSet = outcome_cohorts_da,
-                         name = "dopamine_agonists", 
-                         overwrite = TRUE
-)
-
-### comt inhibitors
-outcome_cohorts_comt <- readCohortSet(here(
-  "1_InstantiateCohorts",
-  "CohortPSSA",
-  "comt_inhibitors"
-))
-
-cdm <- generateCohortSet(cdm = cdm, 
-                         cohortSet = outcome_cohorts_comt,
-                         name = "comt_inhibitors", 
-                         overwrite = TRUE
-)
-
-### maob inhibitors
-outcome_cohorts_maob <- readCohortSet(here(
-  "1_InstantiateCohorts",
-  "CohortPSSA",
-  "maob_inhibitors"
-))
-
-cdm <- generateCohortSet(cdm = cdm, 
-                         cohortSet = outcome_cohorts_maob,
-                         name = "maob_inhibitors", 
-                         overwrite = TRUE
-)
-
-#################################################################################
-#### positive control
-# amiodarone 
-print(paste0("Generating amiodarone at ", Sys.time()))
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("amiodarone", "ingredient")),
-                           table_name = "amiodarone",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-print(paste0("Generated amiodarone at ", Sys.time()))
-
-# levothyroxine
-print(paste0("Generating levothyroxine at ", Sys.time()))
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("levothyroxine", "ingredient")),
-                           table_name = "levothyroxine",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-print(paste0("Generated levothyroxine at ", Sys.time()))
-
-####negative control
-# allpurinol
-print(paste0("Generating allpurinol at ", Sys.time()))
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("allopurinol", "ingredient")),
-                           table_name = "allopurinol",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-print(paste0("Generated allpurinol at ", Sys.time()))
-
+print(paste0("Instantiating antiparkinsonian drug cohorts at ", Sys.time()))
 # Levodopa
-print(paste0("Generating levodopa at ", Sys.time()))
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("levodopa", "ingredient")),
-                           table_name = "levodopa",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-print(paste0("Generated levodopa at ", Sys.time()))
+print(paste0("Generating levodopa cohort at ", Sys.time()))
+cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
+                                                    name = "levodopa",
+                                                    ingredient = "levodopa")
+print(paste0("Generated levodopa cohort at ", Sys.time()))
 
 # Dopamine Agonists
 print(paste0("Generating dopamine agonists at ", Sys.time()))
@@ -125,13 +29,11 @@ cdm <- getSingleDrugCohort(cdm = cdm,
 print(paste0("Generated dopamine agonists at ", Sys.time()))
 
 # Amantadine
-print(paste0("Generating amantadine at ", Sys.time()))
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("amantadine", "ingredient")),
-                           table_name = "amantadine",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-print(paste0("Generated amantadine at ", Sys.time()))
+print(paste0("Generating amantadine cohort at ", Sys.time()))
+cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
+                                                    name = "amantadine",
+                                                    ingredient = "amantadine")
+print(paste0("Generated amantadine cohort at ", Sys.time()))
 
 #MAOB
 print(paste0("Generating MAOB at ", Sys.time()))
@@ -151,14 +53,6 @@ cdm <- getSingleDrugCohort(cdm = cdm,
                            end_date = as.Date("2021-12-31"))
 print(paste0("Generated COMT at ", Sys.time()))
 
-################################################################################################
-# #lithium
-# cdm <- getSingleDrugCohort(cdm = cdm,
-#                            drug = list(c("lithium", "ATC 4th")),
-#                            table_name = "lithium",
-#                            start_date = as.Date("2008-01-01"),
-#                            end_date = as.Date("2021-12-31"))
-# 
 #CCB
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("CALCIUM CHANNEL BLOCKERS", "ATC 2nd")),

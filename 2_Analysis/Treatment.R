@@ -7,15 +7,6 @@ cdm <- CDMConnector::cdm_from_con(
   cohort_tables = c("parkinson_subtypes", "amiodarone", "levothyroxine", "allopurinol", "levodopa", "maob_inhibitors", "amantadine", "dopamine_agonists", "comt_inhibitors", "ccb", "dopamine_depleters", "antiemetics", "atypical_antipsychotics", "typical_antipsychotics")
 ) 
 
-cdm <- CDMConnector::cdm_from_con(
-  con = db,
-  cdm_schema = cdm_database_schema,
-  write_schema = c("schema" = results_database_schema, 
-                   "prefix" = stem_table),
-  cdm_name = db.name,
-  cohort_tables = c("amiodarone", "levothyroxine")
-) 
-
 ################################################################################################
 #                                                                                              #
 #                                       in PD populations                                      #
@@ -164,8 +155,8 @@ cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
                                          markerTable = "parkinson_drugs",
                                          combinationWindow = c(0, 730))
 
-pathway_results <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
-                                                     outcomeTable = "drug_pathway_parkinson")
+pathway_results <- CohortSymmetry::summariseSequenceRatio(cdm = cdm, 
+                                                     sequenceTable = "drug_pathway_parkinson")
 cohort_set <- cdm[["parkinson_drugs"]] %>% 
   dplyr::select(cohort_definition_id, drug_cohort_name) %>% 
   dplyr::distinct() %>% 
@@ -214,8 +205,8 @@ cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
                                          markerWashout = 365,
                                          timeGap = 730)
 
-pathway_results_overall <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
-                                                     outcomeTable = "drug_pathway_parkinson_overall")
+pathway_results_overall <- CohortSymmetry::summariseSequenceRatio(cdm = cdm, 
+                                                     sequenceTable = "drug_pathway_parkinson_overall")
 
 cohort_set_overall <- cdm[["parkinson_drugs_overall"]] %>% 
   dplyr::select(cohort_definition_id, cohort_name) %>% 
@@ -237,106 +228,3 @@ pathway_results_overall <- pathway_results_overall %>%
 
 write.xlsx(pathway_results_overall, "PathwayResults_gen_pop.xlsx")
 write.xlsx(pathway_results, "PathwayResults_Parkinsonism.xlsx")
-
-###############################################################################################
-#Positive control
-cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
-                                         name = "amiodarone_thyroxine",
-                                         dateRange = as.Date(c("2008-01-01", "2021-12-31")),
-                                         indexTable = "amiodarone",
-                                         markerTable = "levothyroxine",
-                                         daysPriorObservation = 365,
-                                         washoutWindow = 365)
-
-amiodarone_levothyroxine <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
-                                                             outcomeTable = "amiodarone_thyroxine")
-
-cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
-                                         name = "amiodarone_thyroxine_parkinson",
-                                         dateRange = as.Date(c("2008-01-01", "2021-12-31")),
-                                         indexTable = "amiodarone2",
-                                         markerTable = "levothyroxine2",
-                                         daysPriorObservation = 365,
-                                         indexWashout = 365,
-                                         markerWashout = 365,
-                                         timeGap = 365)
-
-amiodarone_levothyroxin_parkinson <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
-                                                             outcomeTable = "amiodarone_thyroxine_parkinson")
-
-positive_control <- amiodarone_levothyroxine %>% 
-  dplyr::mutate(comment = "In the general population") %>% 
-  rbind(amiodarone_levothyroxin_parkinson %>% dplyr::mutate(comment = "In the Parkinson's population")) %>% 
-  dplyr::mutate(index_name = "Amiodarone",
-                marker_name = "Levothyroxine") %>% 
-  dplyr::select(index_id, index_name, marker_id, marker_name, index_first, marker_first, csr, asr, lowerCSR_CI, upperCSR_CI, lowerASR_CI, upperASR_CI, comment, cdm_name)
-
-write.xlsx(positive_control, "positive_control_PD.xlsx")
-
-###############################################################################################
-#Negative control
-cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
-                                         name = "thyroxine_allopurinol",
-                                         dateRange = as.Date(c("2008-01-01", "2021-12-31")),
-                                         indexTable = "levothyroxine",
-                                         markerTable = "allopurinol")
-
-levothyroxine_allopurinol <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
-                                                               outcomeTable = "thyroxine_allopurinol")
-
-cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
-                                         name = "thyroxine_allopurinol_parkinson",
-                                         dateRange = as.Date(c("2008-01-01", "2021-12-31")),
-                                         indexTable = "levothyroxine2",
-                                         markerTable = "allopurinol2",
-                                         daysPriorObservation = 365,
-                                         indexWashout = 365,
-                                         markerWashout = 365,
-                                         timeGap = 365)
-
-levothyroxine_allopurinol_parkinson <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
-                                                                        outcomeTable = "thyroxine_allopurinol_parkinson")
-
-negative_control <- levothyroxine_allopurinol %>% 
-  dplyr::mutate(comment = "In the general population") %>% 
-  rbind(levothyroxine_allopurinol_parkinson %>% dplyr::mutate(comment = "In the Parkinson's population")) %>% 
-  dplyr::mutate(index_name = "Levothyroxine",
-                marker_name = "Allopurinol") %>% 
-  dplyr::select(index_id, index_name, marker_id, marker_name, index_first, marker_first, csr, asr, lowerCSR_CI, upperCSR_CI, lowerASR_CI, upperASR_CI, comment, cdm_name)
-
-########################################################################
-cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
-                                         name = "amiodarone_allopurinol",
-                                         dateRange = as.Date(c("2008-01-01", "2021-12-31")),
-                                         indexTable = "amiodarone",
-                                         markerTable = "allopurinol",
-                                         daysPriorObservation = 365,
-                                         indexWashout = 365,
-                                         markerWashout = 365,
-                                         timeGap = 365)
-
-amiodarone_allopurinol <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
-                                                              outcomeTable = "amiodarone_allopurinol")
-
-cdm <- CohortSymmetry::getCohortSequence(cdm = cdm,
-                                         name = "amiodarone_allopurinol_parkinson",
-                                         dateRange = as.Date(c("2008-01-01", "2021-12-31")),
-                                         indexTable = "amiodarone2",
-                                         markerTable = "allopurinol2",
-                                         daysPriorObservation = 365,
-                                         indexWashout = 365,
-                                         markerWashout = 365,
-                                         timeGap = 365)
-
-amiodarone_allopurinol_parkinson <- CohortSymmetry::getSequenceRatios(cdm = cdm, 
-                                                                       outcomeTable = "amiodarone_allopurinol_parkinson")
-
-negative_control2 <- amiodarone_allopurinol %>% 
-  dplyr::mutate(comment = "In the general population") %>% 
-  rbind(amiodarone_allopurinol_parkinson %>% dplyr::mutate(comment = "In the Parkinson's population")) %>% 
-  dplyr::mutate(index_name = "Amiodarone",
-                marker_name = "Allopurinol") %>% 
-  dplyr::select(index_id, index_name, marker_id, marker_name, index_first, marker_first, csr, asr, lowerCSR_CI, upperCSR_CI, lowerASR_CI, upperASR_CI, comment, cdm_name)
-
-negative_control <- rbind(negative_control, negative_control2)
-write.xlsx(negative_control, here(output_folder,"negative_control_PD.xlsx"))

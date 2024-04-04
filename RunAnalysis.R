@@ -4,6 +4,13 @@ logger <- create.logger()
 logfile(logger) <- log_file
 level(logger) <- "INFO"
 
+# Running positive and negative controls
+info(logger, "GENERATING COHORTS FOR PSSA")
+print(paste0("Generating cohorts for PSSA at ", Sys.time()))
+source(here("2_Analysis", "PositiveNegativeControl.R"))
+info(logger, "GENERATING COHORTS FOR PSSA IS DONE")
+print(paste0("Generating cohorts for PSSA is done at ", Sys.time()))
+
 # generating cohorts for PSSA
 info(logger, "GENERATING COHORTS FOR PSSA")
 print(paste0("Generating cohorts for PSSA at ", Sys.time()))
