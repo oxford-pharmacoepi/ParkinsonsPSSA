@@ -94,16 +94,17 @@
       "Package": "CohortSymmetry",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
-      "Remotes": "oxford-pharmacoepi/omock, darwin-eu-dev/omopgenerics",
+      "Remotes": "oxford-pharmacoepi/omock, darwin-eu-dev/omopgenerics, darwin-eu-dev/PatientProfiles",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "CohortSymmetry",
       "RemoteUsername": "oxford-pharmacoepi",
       "RemoteRef": "HEAD",
-      "RemoteSha": "e77aa0122945900e1b664733f1229d782e3a6ef2",
+      "RemoteSha": "2b456e91392f6991e347c8bb336915dc9a618dc9",
       "Requirements": [
         "CDMConnector",
         "PatientProfiles",
+        "dbplyr",
         "dplyr",
         "ggplot2",
         "magrittr",
@@ -116,7 +117,7 @@
         "tidyr",
         "visOmopResults"
       ],
-      "Hash": "359ba05e71b7d358a12fc7cf8c224394"
+      "Hash": "26a875e8aac09e24b0a1e22605d7fa73"
     },
     "DBI": {
       "Package": "DBI",
@@ -227,7 +228,7 @@
       "RemoteRepo": "PatientProfiles",
       "RemoteUsername": "darwin-eu-dev",
       "RemoteRef": "HEAD",
-      "RemoteSha": "10937ae26d27ab45e7a6a1b55e9b380ed5fcca32",
+      "RemoteSha": "ca9eaf864fa2be7989623610eb109e71a3fe08a7",
       "Requirements": [
         "CDMConnector",
         "R",
@@ -244,7 +245,7 @@
         "tidyr",
         "visOmopResults"
       ],
-      "Hash": "c8cd4f665cd8ea01c3e126d7040c8a48"
+      "Hash": "fc5d84d256cf227fff8a703ed6136968"
     },
     "R6": {
       "Package": "R6",
@@ -1078,7 +1079,7 @@
       "RemoteRepo": "omopgenerics",
       "RemoteUsername": "darwin-eu-dev",
       "RemoteRef": "HEAD",
-      "RemoteSha": "864f862ebe69f73d83feaba911294cf1e4f6a97d",
+      "RemoteSha": "e4c5d451ab78c32165ef3c20299422b2bf363ba8",
       "Requirements": [
         "R",
         "cli",
@@ -1091,7 +1092,7 @@
         "stringr",
         "tidyr"
       ],
-      "Hash": "33ab7caca8c5f4f6623ef711e7dc8647"
+      "Hash": "37ba8c0aa982db7edd9c623579efaae0"
     },
     "openssl": {
       "Package": "openssl",

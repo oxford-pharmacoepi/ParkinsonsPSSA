@@ -1,4 +1,5 @@
-#devtools::install_github("oxford-pharmacoepi/CohortSymmetry")
+renv::activate() 
+renv::restore() # this should prompt you to install the various packages required for the study
 library(CDMConnector)
 library(DBI)
 library(plyr)
@@ -6,16 +7,12 @@ library(log4r)
 library(dplyr)
 library(dbplyr)
 library(here)
-library(devtools)
-library(Capr) #devtools::install_github("ohdsi/Capr")
 library(tidyr)
 library(CodelistGenerator)
 library(DrugUtilisation)
-library(lubridate)
-library(CirceR) #remotes::install_github("ohdsi/CirceR")
 library(ggplot2)
 library(xlsx)
-library(IncidencePrevalence)
+library(CohortSymmetry) #devtools::install_github("oxford-pharmacoepi/CohortSymmetry")
 
 # database metadata and connection details -----
 # The name/ acronym for the database
