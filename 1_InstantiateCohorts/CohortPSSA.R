@@ -66,6 +66,7 @@ cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
                                              atcName = "levodopa, decarboxylase inhibitor and COMT inhibitor; oral", 
                                              level = c("ATC 5th"))
 print(paste0("Generated COMT cohort at ", Sys.time()))
+print(paste0("Instantiated antiparkinsonian drug cohorts at ", Sys.time()))
 
 #CCB
 print(paste0("Generating ccb cohort at ", Sys.time()))
