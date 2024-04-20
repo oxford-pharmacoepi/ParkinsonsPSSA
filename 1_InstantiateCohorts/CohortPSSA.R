@@ -3,7 +3,15 @@ cdm <- CDMConnector::cdm_from_con(
   con = db,
   cdm_schema = cdm_database_schema,
   write_schema = c(schema = results_database_schema, prefix = stem_table), 
-  cohort_tables = c("parkinson_subtypes", "amiodarone", "levothyroxine", "allopurinol")
+  cohort_tables = c("parkinson_subtypes", 
+                    "amiodarone", 
+                    "levothyroxine", 
+                    "allopurinol", 
+                    "levodopa",
+                    "dopamine_agonists",
+                    "amantadine",
+                    "maob_inhibitors",
+                    "comt_inhibitors")
 )
 
 ###### Parkinsonism subtypes
