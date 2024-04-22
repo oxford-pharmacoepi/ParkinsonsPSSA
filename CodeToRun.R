@@ -48,6 +48,12 @@ cdm_database_schema <- "...."
 # The name of the schema where results tables will be created 
 results_database_schema <- "...."
 
+# Whether or not to run negative/positive control (T/F)
+run_controls <- TRUE
+
+# Whether or not to run treatment orders (T/F)
+run_treatment_order <- TRUE
+
 # Name of stem outcome table in the result schema where the outcome cohorts will
 # be stored. 
 # Notes: 
