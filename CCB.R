@@ -1,14 +1,3 @@
-devtools::install_github("darwin-eu-dev/DrugUtilisation", force = T, ref = "omopgenerics")
-
-cdm <- CDMConnector::cdm_from_con(
-  con = db,
-  cdm_schema = cdm_database_schema,
-  write_schema = c("schema" = results_database_schema, 
-                   "prefix" = stem_table),
-  cdm_name = db.name,
-  cohort_tables = c("parkinson_subtypes", "amiodarone", "levothyroxine", "allopurinol", "levodopa", "maob_inhibitors", "amantadine", "dopamine_agonists", "comt_inhibitors", "ccb", "dopamine_depleters", "antiemetics", "atypical_antipsychotics", "typical_antipsychotics", "ccb_class", "ccb_class_c", "ccb_class_d", "ccb_class_e", "ccb_class_g", "ccb_class_ca", "ccb_class_cx")
-) 
-
 ############# ATC 2nd
 cdm <- getSingleDrugCohort(cdm = cdm,
                            drug = list(c("CALCIUM CHANNEL BLOCKERS", "ATC 2nd")),

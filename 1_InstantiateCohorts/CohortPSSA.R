@@ -68,20 +68,21 @@ cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
 print(paste0("Generated COMT cohort at ", Sys.time()))
 print(paste0("Instantiated antiparkinsonian drug cohorts at ", Sys.time()))
 
-#CCB
-print(paste0("Generating ccb cohort at ", Sys.time()))
-cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
-                                             name = "ccb",
-                                             atcName = "calcium channel blockers",
-                                             level = c("ATC 2nd"))
-print(paste0("Generated ccb cohort at ", Sys.time()))
-
-#ANTIDEPRESSANTS
-print(paste0("Generating antidepressants cohort at ", Sys.time()))
-cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
-                                             name = "antidepressants",
-                                             atcName = "antidepressants",
-                                             level = c("ATC 3rd"))
+# #CCB
+# print(paste0("Generating potential cascades drug cohorts at ", Sys.time()))
+# print(paste0("Generating ccb cohort at ", Sys.time()))
+# cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
+#                                              name = "ccb",
+#                                              atcName = "calcium channel blockers",
+#                                              level = c("ATC 2nd"))
+# print(paste0("Generated ccb cohort at ", Sys.time()))
+# 
+# #ANTIDEPRESSANTS
+# print(paste0("Generating antidepressants cohort at ", Sys.time()))
+# cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
+#                                              name = "antidepressants",
+#                                              atcName = "antidepressants",
+#                                              level = c("ATC 3rd"))
 # #ANTIEMETICS
 # cdm <- getSingleDrugCohort(cdm = cdm,
 #                            drug = list(c("ANTIEMETICS AND ANTINAUSEANTS", "ATC 2nd")),
@@ -97,28 +98,6 @@ cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
 #                            end_date = as.Date("2021-12-31"))
 
 ######## potential antiparkinson cascades
-# CCB
-print(paste0("Generating CCB at ", Sys.time()))
-cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
-                                                    name = "ccb",
-                                                    ingredient = c("cinnarizine", "flunarizine"))
-
-# Dopamine depleters 
-print(paste0("Generating Dopamine Depleters at ", Sys.time()))
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("tetrabenazine", "ingredient"), c("reserpine", "ingredient")),
-                           table_name = "dopamine_depleters",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-
-# Atypical antipsychotics 
-print(paste0("Generating Atypical Antipsychotics at ", Sys.time()))
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("risperidone", "ingredient"), c("olanzapine", "ingredient"), c("ziprasidone", "ingredient"), c("aripiprazole", "ingredient")),
-                           table_name = "atypical_antipsychotics",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-
 # Antiemetics 
 print(paste0("Generating Antiemetics at ", Sys.time()))
 cdm <- getSingleDrugCohort(cdm = cdm,
