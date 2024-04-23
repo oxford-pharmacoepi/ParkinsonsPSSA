@@ -11,7 +11,11 @@ cdm <- CDMConnector::cdm_from_con(
                     "dopamine_agonists",
                     "amantadine",
                     "maob_inhibitors",
-                    "comt_inhibitors")
+                    "comt_inhibitors",
+                    "ccb",
+                    "dopamine_depleters",
+                    "atypical_antipsychotics",
+                    "antiemetics")
 )
 
 ###### Parkinsonism subtypes
@@ -98,29 +102,6 @@ print(paste0("Instantiated antiparkinsonian drug cohorts at ", Sys.time()))
 #                            end_date = as.Date("2021-12-31"))
 
 ######## potential antiparkinson cascades
-# Antiemetics 
-print(paste0("Generating Antiemetics at ", Sys.time()))
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("metoclopramide", "ingredient"), c("levosulpiride", "ingredient"), c("clebopride", "ingredient")),
-                           table_name = "antiemetics",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-
-# Typical antipsychotics 
-print(paste0("Generating Typical antipsychotics at ", Sys.time()))
-cdm <- getSingleDrugCohort(cdm = cdm,
-                           drug = list(c("chlorpromazine", "ingredient"), 
-                                       c("prochlorperazine", "ingredient"), 
-                                       c("perphenazine", "ingredient"), 
-                                       c("fluphenazine", "ingredient"), 
-                                       c("promethazine", "ingredient"), 
-                                       c("haloperidol", "ingredient"),
-                                       c("pimozide", "ingredient"), 
-                                       c("sulpiride", "ingredient")),
-                           table_name = "typical_antipsychotics",
-                           start_date = as.Date("2008-01-01"),
-                           end_date = as.Date("2021-12-31"))
-
 ###########################################################################
 # Atypical antipsychotics 
 print(paste0("Generating Atypical antipsychotics at ", Sys.time()))
