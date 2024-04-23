@@ -60,7 +60,7 @@ cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
 # Antidepressant
 print(paste0("Generating antidepressant at ", Sys.time()))
 cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
-                                                    name = "mood_stabilizer",
+                                                    name = "antidepressants",
                                                     ingredient = c("citalopram",
                                                                    "fluoxetine",
                                                                    "praoxetine",
@@ -72,7 +72,7 @@ cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
                                                     ingredient = c("phenytoin",
                                                                    "valproate"))
 
-# Antiemetics Infreqeuncy
+# Antiemetics
 print(paste0("Generating Antiemetics that infrequently causes DIP at ", Sys.time()))
 cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
                                                     name = "antiemetics2",
