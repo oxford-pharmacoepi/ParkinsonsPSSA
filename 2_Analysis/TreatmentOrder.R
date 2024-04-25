@@ -21,12 +21,12 @@ if (!dir.exists(treatment_order_plots_subfolder)) {
 print(paste0("Starting PSSA for antiparkinsonian drugs at ", Sys.time()))
 cdm <- omopgenerics::bind(
   cdm$levodopa, cdm$dopamine_agonists, cdm$maob_inhibitors, cdm$comt_inhibitors, cdm$amantadine,
-  name = "parikinson_treatment"
+  name = "parkinson_treatment"
 )
 
 cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
-                                                 indexTable = "parikinson_treatment",
-                                                 markerTable = "parikinson_treatment",
+                                                 indexTable = "parkinson_treatment",
+                                                 markerTable = "parkinson_treatment",
                                                  name = "treatment_order",
                                                  cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
