@@ -28,3 +28,12 @@ if (run_treatment_order == T){
   info(logger, "RUNNING TREATMENTS ORDER ANALYSIS IS DONE")
   print(paste0("Finishing treatment order analysis at ", Sys.time()))
 }
+
+if (run_hypothesis_driven == T){
+  # running treatments for PD
+  info(logger, "RUNNING HYPOTHESIS DRIVEN ANALYSIS")
+  print(paste0("Running hypothesis driven analysis at ", Sys.time()))
+  source(here("2_Analysis", "TreatmentOrder.R"))
+  info(logger, "RUNNING HYPOTHESIS DRIVEN ANALYSIS DONE")
+  print(paste0("Finishing hypothesis driven analysis at ", Sys.time()))
+}
