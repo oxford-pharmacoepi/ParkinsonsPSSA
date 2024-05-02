@@ -23,6 +23,9 @@ cdm <- omopgenerics::bind(
   cdm$levodopa, cdm$dopamine_agonists, cdm$maob_inhibitors, cdm$comt_inhibitors, cdm$amantadine,
   name = "parkinson_treatment"
 )
+cdm[["parkinson_treatment"]] <- cdm[["parkinson_treatment"]] %>% 
+  dplyr::compute(name = "parkinson_treatment",
+                 temporary = F)
 
 cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "parkinson_treatment",
