@@ -111,6 +111,11 @@ cdm <- omopgenerics::bind(
   name = "infreq_hypothesise_driven"
 )
 
+cdm <- omopgenerics::bind(
+  cdm$levodopa, cdm$dopamine_agonists, cdm$maob_inhibitors, cdm$comt_inhibitors, cdm$amantadine,
+  name = "parkinson_treatment"
+)
+
 print(paste0("Carrying out PSSA using drugs that are known to freqently cause DIP at ", Sys.time()))
 cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "freq_hypothesise_driven",
@@ -118,20 +123,20 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  name = "freq_hypo",
                                                  cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
-CohortSymmetry::summariseSequenceRatio(cdm = cdm, sequenceTable = "freq_hypo") |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$freq_hypo) |>
   write.xlsx(file = here(hypothesis_results_subfolder, "freq_hypo.xlsx"))
 
-freq_hypo <- CohortSymmetry::summariseSequenceRatio(cdm = cdm, sequenceTable = "freq_hypo")
-CohortSymmetry::tableSequenceRatios(result = freq_hypo) %>% 
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$freq_hypo) |>
+  CohortSymmetry::tableSequenceRatios() |> 
   gt::gtsave(filename = here(hypothesis_gt_subfolder, "freq_hypo.docx"))
 
-CohortSymmetry::plotTemporalSymmetry(cdm = cdm, joinedTable = "freq_hypo") %>% 
-  ggsave(filename = here(hypothesis_plots_subfolder, "freq_hypo_temporal.png"), width = 30, height = 10)
-CohortSymmetry::plotSequenceRatio(cdm = cdm, 
-                                  joinedTable = "freq_hypo", 
-                                  sequenceRatio = freq_hypo, 
-                                  onlyaSR = T, 
-                                  colours = "black") %>% 
+CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$freq_hypo) |>
+  CohortSymmetry::plotTemporalSymmetry() |> 
+  ggsave(filename = here(hypothesis_plots_subfolder, "freq_hypo_temporal.png"), width = 30, height = 18)
+
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$freq_hypo) |>
+  CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
+                                    colours = "black") |>
   ggsave(filename = here(hypothesis_plots_subfolder, "freq_hypo_sr.png"), width = 30, height = 10)
 
 print(paste0("Carrying out PSSA using drugs that are known to infreqently cause DIP at ", Sys.time()))
@@ -141,18 +146,18 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  name = "infreq_hypo",
                                                  cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
-CohortSymmetry::summariseSequenceRatio(cdm = cdm, sequenceTable = "infreq_hypo") |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$infreq_hypo) |>
   write.xlsx(file = here(hypothesis_results_subfolder, "infreq_hypo.xlsx"))
 
-infreq_hypo <- CohortSymmetry::summariseSequenceRatio(cdm = cdm, sequenceTable = "infreq_hypo")
-CohortSymmetry::tableSequenceRatios(result = infreq_hypo) %>% 
+CohortSymmetry::summariseSequenceRatios(cohort= cdm$infreq_hypo) |>
+  CohortSymmetry::tableSequenceRatios() %>% 
   gt::gtsave(filename = here(hypothesis_gt_subfolder, "infreq_hypo.docx"))
 
-CohortSymmetry::plotTemporalSymmetry(cdm = cdm, joinedTable = "infreq_hypo") %>% 
-  ggsave(filename = here(hypothesis_plots_subfolder, "infreq_hypo_temporal.png"), width = 30, height = 10)
-CohortSymmetry::plotSequenceRatio(cdm = cdm, 
-                                  joinedTable = "infreq_hypo", 
-                                  sequenceRatio = infreq_hypo, 
-                                  onlyaSR = T, 
-                                  colours = "black") %>% 
+CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$infreq_hypo) |>
+  CohortSymmetry::plotTemporalSymmetry() |> 
+  ggsave(filename = here(hypothesis_plots_subfolder, "infreq_hypo_temporal.png"), width = 30, height = 18)
+
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$infreq_hypo) |>
+  CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
+                                     colours = "black") |>
   ggsave(filename = here(hypothesis_plots_subfolder, "infreq_hypo_sr.png"), width = 30, height = 10)
