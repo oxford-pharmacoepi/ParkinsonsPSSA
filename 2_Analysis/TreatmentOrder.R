@@ -23,9 +23,6 @@ cdm <- omopgenerics::bind(
   cdm$levodopa, cdm$dopamine_agonists, cdm$maob_inhibitors, cdm$comt_inhibitors, cdm$amantadine,
   name = "parkinson_treatment"
 )
-cdm[["parkinson_treatment"]] <- cdm[["parkinson_treatment"]] %>% 
-  dplyr::compute(name = "parkinson_treatment",
-                 temporary = F)
 
 cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "parkinson_treatment",
@@ -33,18 +30,18 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  name = "treatment_order",
                                                  cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
-CohortSymmetry::summariseSequenceRatio(cdm = cdm, sequenceTable = "treatment_order") |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$treatment_order) |>
   write.xlsx(file = here(treatment_order_results_subfolder, "treatment_order.xlsx"))
 
-treatment_order <- CohortSymmetry::summariseSequenceRatio(cdm = cdm, sequenceTable = "treatment_order")
-CohortSymmetry::tableSequenceRatios(result = treatment_order) %>% 
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$treatment_order) |>
+  CohortSymmetry::tableSequenceRatios() %>% 
   gt::gtsave(filename = here(treatment_order_gt_subfolder, "treatment_order.docx"))
 
-CohortSymmetry::plotTemporalSymmetry(cdm = cdm, joinedTable = "treatment_order") %>% 
+CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$treatment_order) |>
+  CohortSymmetry::plotTemporalSymmetry() %>% 
   ggsave(filename = here(treatment_order_plots_subfolder, "treatment_order_temporal.png"), width = 30, height = 10)
-CohortSymmetry::plotSequenceRatio(cdm = cdm, 
-                                  joinedTable = "treatment_order", 
-                                  sequenceRatio = treatment_order, 
-                                  onlyaSR = T, 
-                                  colours = "black") %>% 
+
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$treatment_order) |>
+  CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
+                                    colours = "black") %>% 
   ggsave(filename = here(treatment_order_plots_subfolder, "treatment_order_sr.png"), width = 30, height = 10)
