@@ -2,6 +2,7 @@
 <img src="https://img.shields.io/badge/Study%20Status-Started-blue.svg" alt="Study Status: Started">
 
 - **Study title**: Prescription Sequence Symmetry Analysis for Antiparkinsonian Treatments
+- **Study lead(s)**: Xihang Chen (xihang.chen@ndorms.ox.ac.uk)
 - **ShinyApp Main Study**: TBC
 - **Publications**: TBC
 
