@@ -1,3 +1,4 @@
+print("See Shin et al. (2012)")
 print(paste0("Generating drug cohorts that frequently causes parkinson-like symptoms at ", Sys.time()))
 
 hypothesis_subfolder <- here(output_folder, "hypothesis")
