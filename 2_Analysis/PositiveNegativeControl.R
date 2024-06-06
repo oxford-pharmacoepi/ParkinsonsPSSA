@@ -1,3 +1,6 @@
+print(paste0("Running positive and negative controls at ", Sys.time()))
+print(paste0("See Pratt et al. (2015)"))
+
 controls_subfolder <- here(output_folder, "positive_negative_controls")
 if (!dir.exists(controls_subfolder)) {
   dir.create(controls_subfolder)
