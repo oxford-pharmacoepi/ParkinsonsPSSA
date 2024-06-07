@@ -1,4 +1,4 @@
-print("See Shin et al. (2012)")
+print("Inspired by Shin et al. (2012)")
 print(paste0("Generating drug cohorts that frequently causes parkinson-like symptoms at ", Sys.time()))
 
 hypothesis_subfolder <- here(output_folder, "hypothesis")
@@ -6,22 +6,26 @@ if (!dir.exists(hypothesis_subfolder)) {
   dir.create(hypothesis_subfolder)
 }
 
-hypothesis_results_subfolder <- here(hypothesis_subfolder, "results")
+hypothesis_subfolder_shin <- here(hypothesis_subfolder, "shin")
+if (!dir.exists(hypothesis_subfolder_shin)) {
+  dir.create(hypothesis_subfolder_shin)
+}
+
+hypothesis_results_subfolder <- here(hypothesis_subfolder_shin, "results")
 if (!dir.exists(hypothesis_results_subfolder)) {
   dir.create(hypothesis_results_subfolder)
 }
 
-hypothesis_gt_subfolder <- here(hypothesis_subfolder, "gt")
+hypothesis_gt_subfolder <- here(hypothesis_subfolder_shin, "gt")
 if (!dir.exists(hypothesis_gt_subfolder)) {
   dir.create(hypothesis_gt_subfolder)
 }
 
-hypothesis_plots_subfolder <- here(hypothesis_subfolder, "plots")
+hypothesis_plots_subfolder <- here(hypothesis_subfolder_shin, "plots")
 if (!dir.exists(hypothesis_plots_subfolder)) {
   dir.create(hypothesis_plots_subfolder)
 }
 
-print(paste0("Starting PSSA for antiparkinsonian drugs at ", Sys.time()))
 # CCB
 print(paste0("Generating CCB at ", Sys.time()))
 cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
@@ -122,7 +126,9 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "freq_hypothesise_driven",
                                                  markerTable = "parkinson_treatment",
                                                  name = "freq_hypo",
-                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
+                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")),
+                                                 daysPriorObservation = 365,
+                                                 washoutWindow = 365)
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$freq_hypo) |>
   write.xlsx(file = here(hypothesis_results_subfolder, "freq_hypo.xlsx"))
@@ -145,7 +151,9 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "infreq_hypothesise_driven",
                                                  markerTable = "parkinson_treatment",
                                                  name = "infreq_hypo",
-                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
+                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")),
+                                                 daysPriorObservation = 365,
+                                                 washoutWindow = 365)
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$infreq_hypo) |>
   write.xlsx(file = here(hypothesis_results_subfolder, "infreq_hypo.xlsx"))
@@ -162,3 +170,43 @@ CohortSymmetry::summariseSequenceRatios(cohort = cdm$infreq_hypo) |>
   CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
                                      colours = "black") |>
   ggsave(filename = here(hypothesis_plots_subfolder, "infreq_hypo_sr.png"), width = 30, height = 10)
+
+################################################################################
+print("Inspired by Feldman et al. (2022)")
+
+# Atypical antipsychotics 
+print(paste0("Generating Typical Antipsychotics at ", Sys.time()))
+cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
+                                                    name = "typical_antipsychotics_feldman",
+                                                    ingredient = c("prochlorperazine",
+                                                                   "levomepromazine",
+                                                                   "thioridazine",
+                                                                   "perphenazine",
+                                                                   "fluphenazine",
+                                                                   "flupentixol",
+                                                                   "thiothixene",
+                                                                   "zuclopenthixol",
+                                                                   "pimozide",
+                                                                   "loxapine",
+                                                                   "amoxapine",
+                                                                   "haloperidol",
+                                                                   "droperidol",
+                                                                   "thioproprazate",
+                                                                   "thioproperazine",
+                                                                   "thiothixene",
+                                                                   "trifluoperazine"))
+
+# Low potency D2R antagonists 
+print(paste0("Generating Low potency D2R antagonists at ", Sys.time()))
+cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
+                                                    name = "low_potency_d2r_feldman",
+                                                    ingredient = c("chlorpromazine",
+                                                                   "chlorprothixene",
+                                                                   "levomepromazine",
+                                                                   "mepazine",
+                                                                   "mesoridazine",
+                                                                   "methoxypromazine",
+                                                                   "percyazine",
+                                                                   "pimozide",
+                                                                   "promazine",
+                                                                   "thioridazine"))

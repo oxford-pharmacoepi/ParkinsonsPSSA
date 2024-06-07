@@ -48,7 +48,9 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "amiodarone",
                                                  markerTable = "levothyroxine",
                                                  name = "amiodarone_thyroxine",
-                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
+                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")),
+                                                 daysPriorObservation = 365,
+                                                 washoutWindow = 365)
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine) |>
   write.xlsx(file = here(controls_results_subfolder, "amiodarone_levothyroxine_positive_control.xlsx"))
@@ -71,7 +73,9 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "levothyroxine",
                                                  markerTable = "allopurinol",
                                                  name = "thyroxine_allopurinol",
-                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
+                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")),
+                                                 daysPriorObservation = 365,
+                                                 washoutWindow = 365)
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol) |>
   write.xlsx(file = here(controls_results_subfolder, "levothyroxine_allopurinol_negative_control.xlsx"))
@@ -94,7 +98,9 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "amiodarone",
                                                  markerTable = "allopurinol",
                                                  name = "amiodarone_allopurinol",
-                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
+                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")),
+                                                 daysPriorObservation = 365,
+                                                 washoutWindow = 365)
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol) |>
   write.xlsx(file = here(controls_results_subfolder, "amiodarone_allopurinol_negative_control.xlsx"))
