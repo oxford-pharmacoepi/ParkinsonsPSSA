@@ -52,18 +52,22 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  daysPriorObservation = 365,
                                                  washoutWindow = 365)
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine,
+                                        minCellCount = minimum_counts) |>
   write.xlsx(file = here(controls_results_subfolder, "amiodarone_levothyroxine_positive_control.xlsx"))
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine,
+                                        minCellCount = minimum_counts) |>
   CohortSymmetry::tableSequenceRatios() %>% 
   gt::gtsave(filename = here(controls_gt_subfolder, "amiodarone_levothyroxine_positive_control.docx"))
 
-CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$amiodarone_thyroxine) |>
+CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$amiodarone_thyroxine,
+                                          minCellCount = minimum_counts) |>
   CohortSymmetry::plotTemporalSymmetry() %>% 
   ggsave(filename = here(controls_plots_subfolder, "amiodarone_levothyroxine_positive_control_temporal.png"), width = 8, height = 6)
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine,
+                                        minCellCount = minimum_counts) |>
   CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
                                      colours = "black") %>% 
   ggsave(filename = here(controls_plots_subfolder, "amiodarone_levothyroxine_positive_control_sr.png"), width = 8, height = 6)
@@ -77,18 +81,22 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  daysPriorObservation = 365,
                                                  washoutWindow = 365)
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol,
+                                        minCellCount = minimum_counts) |>
   write.xlsx(file = here(controls_results_subfolder, "levothyroxine_allopurinol_negative_control.xlsx"))
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol,
+                                        minCellCount = minimum_counts) |>
   CohortSymmetry::tableSequenceRatios() %>% 
   gt::gtsave(filename = here(controls_gt_subfolder, "levothyroxine_allopurinol_negative_control.docx"))
 
-CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$thyroxine_allopurinol) |>
+CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$thyroxine_allopurinol,
+                                          minCellCount = minimum_counts) |>
   CohortSymmetry::plotTemporalSymmetry() %>% 
   ggsave(filename = here(controls_plots_subfolder, "levothyroxine_allopurinol_negative_control_temporal.png"), width = 8, height = 6)
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol,
+                                        minCellCount = minimum_counts) |>
   CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
                                   colours = "black") %>% 
   ggsave(filename = here(controls_plots_subfolder, "levothyroxine_allopurinol_negative_control_sr.png"), width = 8, height = 6)
@@ -102,18 +110,22 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  daysPriorObservation = 365,
                                                  washoutWindow = 365)
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol,
+                                        minCellCount = minimum_counts) |>
   write.xlsx(file = here(controls_results_subfolder, "amiodarone_allopurinol_negative_control.xlsx"))
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol,
+                                        minCellCount = minimum_counts) |>
   CohortSymmetry::tableSequenceRatios() %>% 
   gt::gtsave(filename = here(controls_gt_subfolder, "amiodarone_allopurinol_negative_control.docx"))
 
-CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$amiodarone_allopurinol) |>
+CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$amiodarone_allopurinol,
+                                          minCellCount = minimum_counts) |>
   CohortSymmetry::plotTemporalSymmetry() %>% 
   ggsave(filename = here(controls_plots_subfolder, "amiodarone_allopurinol_negative_control_temporal.png"), width = 8, height = 6)
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol,
+                                        minCellCount = minimum_counts) |>
   CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
                                     colours = "black") %>% 
   ggsave(filename = here(controls_plots_subfolder, "amiodarone_allopurinol_negative_control_sr.png"), width = 8, height = 6)

@@ -30,18 +30,22 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  name = "treatment_order",
                                                  cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$treatment_order) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$treatment_order,
+                                        minCellCount = minimum_counts) |>
   write.xlsx(file = here(treatment_order_results_subfolder, "treatment_order.xlsx"))
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$treatment_order) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$treatment_order,
+                                        minCellCount = minimum_counts) |>
   CohortSymmetry::tableSequenceRatios() %>% 
   gt::gtsave(filename = here(treatment_order_gt_subfolder, "treatment_order.docx"))
 
-CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$treatment_order) |>
+CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$treatment_order,
+                                          minCellCount = minimum_counts) |>
   CohortSymmetry::plotTemporalSymmetry() %>% 
   ggsave(filename = here(treatment_order_plots_subfolder, "treatment_order_temporal.png"), width = 30, height = 10)
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$treatment_order) |>
+CohortSymmetry::summariseSequenceRatios(cohort = cdm$treatment_order,
+                                        minCellCount = minimum_counts) |>
   CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
                                     colours = "black") %>% 
   ggsave(filename = here(treatment_order_plots_subfolder, "treatment_order_sr.png"), width = 30, height = 10)
