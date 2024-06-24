@@ -57,6 +57,10 @@ run_treatment_order <- TRUE
 #Wether or not to run hypothesis driven (using hypotheses found using previous research)
 run_hypothesis_driven <- TRUE
 
+# Whether or to instantiate index cohorts prior, only set it to be FALSE if relevant
+# parts of HypothesisDrivenDrugInduced.R have been run 
+instantiate_index <- TRUE
+
 # Name of stem outcome table in the result schema where the outcome cohorts will
 # be stored. 
 # Notes: 

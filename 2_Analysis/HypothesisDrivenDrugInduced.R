@@ -26,6 +26,28 @@ if (!dir.exists(hypothesis_plots_subfolder)) {
   dir.create(hypothesis_plots_subfolder)
 }
 
+### Pulling back if necessary
+if (instantiate_index == F){
+cdm <- CDMConnector::cdm_from_con(
+  con = db,
+  cdm_schema = cdm_database_schema,
+  write_schema = c(schema = results_database_schema, prefix = stem_table), 
+  cohort_tables = c("amiodarone", 
+                    "levothyroxine", 
+                    "allopurinol", 
+                    "parkinson_treatment",
+                    "ccb",
+                    "dopamine_depleters",
+                    "atypical_antipsychotics",
+                    "antiemetics",
+                    "typical_antipsychotics",
+                    "atypical_antipsychotics2",
+                    "mood_stabilizer",
+                    "antidepressants",
+                    "antiepileptics",
+                    "antiemetics2",
+                    "tiapride")
+)} else {
 # CCB
 print(paste0("Generating CCB at ", Sys.time()))
 cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
@@ -105,6 +127,7 @@ cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
                                                     ingredient = c("domperidone",
                                                                    "itopride",
                                                                    "clebopride"))
+}
 
 cdm <- omopgenerics::bind(
   cdm$typical_antipsychotics, cdm$atypical_antipsychotics, cdm$dopamine_depleters, cdm$antiemetics, cdm$ccb,
@@ -114,11 +137,6 @@ cdm <- omopgenerics::bind(
 cdm <- omopgenerics::bind(
   cdm$atypical_antipsychotics2, cdm$mood_stabilizer, cdm$antidepressants, cdm$antiepileptics, cdm$antiemetics2,
   name = "infreq_hypothesise_driven"
-)
-
-cdm <- omopgenerics::bind(
-  cdm$levodopa, cdm$dopamine_agonists, cdm$maob_inhibitors, cdm$comt_inhibitors, cdm$amantadine,
-  name = "parkinson_treatment"
 )
 
 print(paste0("Carrying out PSSA using drugs that are known to freqently cause DIP at ", Sys.time()))
@@ -180,6 +198,7 @@ CohortSymmetry::summariseSequenceRatios(cohort = cdm$infreq_hypo,
   ggsave(filename = here(hypothesis_plots_subfolder, "infreq_hypo_sr.png"), width = 30, height = 10)
 
 ################################################################################
+print("Inspired by Feldman et al. (2022)")
 hypothesis_subfolder_feldman <- here(hypothesis_subfolder, "feldman")
 if (!dir.exists(hypothesis_subfolder_feldman)) {
   dir.create(hypothesis_subfolder_feldman)
@@ -199,20 +218,16 @@ hypothesis_plots_subfolder <- here(hypothesis_subfolder_feldman, "plots")
 if (!dir.exists(hypothesis_plots_subfolder)) {
   dir.create(hypothesis_plots_subfolder)
 }
-print("Inspired by Feldman et al. (2022)")
+
+if (instantiate_index == F){
 cdm <- CDMConnector::cdm_from_con(
   con = db,
   cdm_schema = cdm_database_schema,
   write_schema = c(schema = results_database_schema, prefix = stem_table), 
-  cohort_tables = c("parkinson_subtypes", 
-                    "amiodarone", 
+  cohort_tables = c("amiodarone", 
                     "levothyroxine", 
                     "allopurinol", 
-                    "levodopa",
-                    "dopamine_agonists",
-                    "amantadine",
-                    "maob_inhibitors",
-                    "comt_inhibitors",
+                    "parkinson_treatment",
                     "typical_antipsychotics_feldman",
                     "low_potency_d2r_feldman",
                     "atypical_antipsychotics_feldman",
@@ -236,8 +251,7 @@ cdm <- CDMConnector::cdm_from_con(
                     "anticholinester_feldman",
                     "miscellaneous_feldman"
                     )
-)
-
+)} else {
 
 # Typical antipsychotics 
 print(paste0("Generating Typical Antipsychotics at ", Sys.time()))
@@ -327,7 +341,6 @@ cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
                                                                    "amphotericin B",
                                                                    "trimethoprim",
                                                                    "sulfamethoxazole"))
-
 # Anticonvulsants
 print(paste0("Generating Anticonvulsants at ", Sys.time()))
 cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
@@ -440,6 +453,7 @@ cdm <- DrugUtilisation::generateConceptCohortSet(cdm = cdm,
                                                  name = "anticholinester_feldman")
 
 cdm$anticholinester_feldman <- CohortConstructor::unionCohorts(cdm$anticholinester_feldman)
+}
 
 cdm <- omopgenerics::bind(
   cdm$typical_antipsychotics_feldman, cdm$low_potency_d2r_feldman,               
@@ -484,6 +498,7 @@ CohortSymmetry::summariseSequenceRatios(cohort = cdm$feldman_hypo) |>
   ggsave(filename = here(hypothesis_plots_subfolder, "feldman_hypo_sr.png"), width = 30, height = 10)
 
 ################################################################################
+print("Running PSSA on class level")
 hypothesis_subfolder_class_level <- here(hypothesis_subfolder, "class_level")
 if (!dir.exists(hypothesis_subfolder_class_level)) {
   dir.create(hypothesis_subfolder_class_level)
@@ -504,6 +519,27 @@ if (!dir.exists(hypothesis_plots_subfolder)) {
   dir.create(hypothesis_plots_subfolder)
 }
 
+if (instantiate_index == F){
+  cdm <- CDMConnector::cdm_from_con(
+    con = db,
+    cdm_schema = cdm_database_schema,
+    write_schema = c(schema = results_database_schema, prefix = stem_table), 
+    cohort_tables = c("amiodarone", 
+                      "levothyroxine", 
+                      "allopurinol", 
+                      "parkinson_treatment",
+                      "antipsychotics_atc",
+                      "antidepressants_atc",
+                      "ccb_atc",
+                      "antiemetics_atc",
+                      "antiepileptics_atc",
+                      "propulsives_atc",
+                      "antiarrhythmics_atc",
+                      "antihypentensives_atc"
+    )
+  )
+} else {
+  
 #Antipsychotics
 print(paste0("Generating Antipsychotics at ", Sys.time()))
 cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
@@ -559,6 +595,7 @@ cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
                                              name = "antihypentensives_atc",
                                              atcName = "ANTIHYPERTENSIVES",
                                              level = "ATC 2nd")
+}
 
 cdm <- omopgenerics::bind(
   cdm$antipsychotics_atc,                     cdm$antidepressants_atc,                          
@@ -566,19 +603,6 @@ cdm <- omopgenerics::bind(
   cdm$antiepileptics_atc,                     cdm$propulsives_atc,                    
   cdm$antiarrhythmics_atc,                    cdm$antihypentensives_atc,   
   name = "class_hypothesis"
-)
-
-cdm <- CDMConnector::cdm_from_con(
-  con = db,
-  cdm_schema = cdm_database_schema,
-  write_schema = c(schema = results_database_schema, prefix = stem_table), 
-  cohort_tables = c("parkinson_subtypes", 
-                    "amiodarone", 
-                    "levothyroxine", 
-                    "allopurinol", 
-                    "parkinson_treatment",
-                    "class_hypothesis"
-  )
 )
 
 cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
