@@ -1,23 +1,3 @@
-#### pull back instantiated cohorts
-cdm <- CDMConnector::cdm_from_con(
-  con = db,
-  cdm_schema = cdm_database_schema,
-  write_schema = c(schema = results_database_schema, prefix = stem_table), 
-  cohort_tables = c("parkinson_subtypes", 
-                    "amiodarone", 
-                    "levothyroxine", 
-                    "allopurinol", 
-                    "levodopa",
-                    "dopamine_agonists",
-                    "amantadine",
-                    "maob_inhibitors",
-                    "comt_inhibitors",
-                    "ccb",
-                    "dopamine_depleters",
-                    "atypical_antipsychotics",
-                    "antiemetics")
-)
-
 ###### Parkinsonism subtypes
 print(paste0("Instantiating Parkinsonism subtypes cohorts at ", Sys.time()))
 outcome_cohorts_subtypes <- readCohortSet(here(
@@ -71,3 +51,8 @@ cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
                                              level = c("ATC 5th"))
 print(paste0("Generated COMT cohort at ", Sys.time()))
 print(paste0("Instantiated antiparkinsonian drug cohorts at ", Sys.time()))
+
+cdm <- omopgenerics::bind(
+  cdm$levodopa, cdm$dopamine_agonists, cdm$maob_inhibitors, cdm$comt_inhibitors, cdm$amantadine,
+  name = "parkinson_treatment"
+)
