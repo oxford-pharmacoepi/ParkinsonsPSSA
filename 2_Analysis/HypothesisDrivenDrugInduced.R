@@ -231,9 +231,9 @@ cdm <- CDMConnector::cdm_from_con(
                     "typical_antipsychotics_feldman",
                     "low_potency_d2r_feldman",
                     "atypical_antipsychotics_feldman",
-                    "non-antipsychoticneuroleptics1_feldman",
-                    "non-antipsychoticneuroleptics2_feldman",
-                    "non-antipsychoticneuroleptics3_feldman",
+                    "non_antipsychoticneuroleptics1_feldman",
+                    "non_antipsychoticneuroleptics2_feldman",
+                    "non_antipsychoticneuroleptics3_feldman",
                     "antiarrhythmics_feldman",
                     "antibiotics_feldman",
                     "anticonvulsants_feldman",
@@ -306,7 +306,7 @@ cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
 # Non-antipsychoticneuroleptics 
 print(paste0("Generating Non-antipsychoticneuroleptics at ", Sys.time()))
 cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
-                                                    name = "non-antipsychoticneuroleptics1_feldman",
+                                                    name = "non_antipsychoticneuroleptics1_feldman",
                                                     ingredient = c("metoclopramide",
                                                                    "clebopride",
                                                                    "prochlorperazine",
@@ -314,13 +314,13 @@ cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
                                                                    "domperidone"))
 
 cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
-                                                    name = "non-antipsychoticneuroleptics2_feldman",
+                                                    name = "non_antipsychoticneuroleptics2_feldman",
                                                     ingredient = c("hydroxyzine", 
                                                                    "alimemazine", 
                                                                    "aceprometazine"))
 
 cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
-                                                    name = "non-antipsychoticneuroleptics3_feldman",
+                                                    name = "non_antipsychoticneuroleptics3_feldman",
                                                     ingredient = c("sulpiride",
                                                                    "tiapride",
                                                                    "cisapride",
@@ -457,8 +457,8 @@ cdm$anticholinester_feldman <- CohortConstructor::unionCohorts(cdm$anticholinest
 
 cdm <- omopgenerics::bind(
   cdm$typical_antipsychotics_feldman, cdm$low_potency_d2r_feldman,               
-  cdm$atypical_antipsychotics_feldman, cdm$`non-antipsychoticneuroleptics1_feldman`,
-  cdm$`non-antipsychoticneuroleptics2_feldman`, cdm$`non-antipsychoticneuroleptics3_feldman`,
+  cdm$atypical_antipsychotics_feldman, cdm$non_antipsychoticneuroleptics1_feldman,
+  cdm$non_antipsychoticneuroleptics2_feldman, cdm$non_antipsychoticneuroleptics3_feldman,
   cdm$antiarrhythmics_feldman, cdm$antibiotics_feldman,                   
   cdm$anticonvulsants_feldman, cdm$antidepressants_feldman,               
   cdm$ssri_feldman,                           cdm$maoi_feldman,                          
@@ -597,11 +597,66 @@ cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
                                              level = "ATC 2nd")
 }
 
+#TYPICAL_ANTIPSYCHOTICS
+print(paste0("Generating TYPICAL ANTIPSYCHOTICS as a class at ", Sys.time()))
+cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
+                                                    name = "typical_antipsychotics_class",
+                                                    ingredient = c("chlorpromazine",
+                                                                   "prochlorperazine",
+                                                                   "perphenazine",
+                                                                   "fluphenazine",
+                                                                   "promethazine",
+                                                                   "haloperidol",     
+                                                                   "pimozide",
+                                                                   "levomepromazine",
+                                                                   "flupentixol",
+                                                                   "zuclopenthixol",
+                                                                   "loxapine",
+                                                                   "amoxapine",       
+                                                                   "droperidol",
+                                                                   "thioproprazate",
+                                                                   "thioproperazine", 
+                                                                   "thiothixene",
+                                                                   "trifluoperazine",
+                                                                   "chlorprothixene", 
+                                                                   "mepazine",
+                                                                   "mesoridazine",
+                                                                   "methoxypromazine",
+                                                                   "percyazine",
+                                                                   "promazine",
+                                                                   "thioridazine" )
+                                                                   )
+
+cdm$typical_antipsychotics_class <- cdm$typical_antipsychotics_class |>
+  CohortConstructor::unionCohorts()
+
+#ATYPICAL_ANTIPSYCHOTICS
+print(paste0("Generating ATYPICAL ANTIPSYCHOTICS as a class at ", Sys.time()))
+cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
+                                                    name = "atypical_antipsychotics_class",
+                                                    ingredient = c("risperidone", 
+                                                                   "olanzapine",
+                                                                   "ziprasidone",
+                                                                   "aripiprazole",
+                                                                   "clozapine", 
+                                                                   "quetiapine",
+                                                                   "zotepine",
+                                                                   "brexpiprazole",
+                                                                   "asenapine",
+                                                                   "iloperidone",
+                                                                   "lurasidone",
+                                                                   "paliperidone")
+)
+
+cdm$atypical_antipsychotics_class <- cdm$atypical_antipsychotics_class |>
+  CohortConstructor::unionCohorts()
+
 cdm <- omopgenerics::bind(
   cdm$antipsychotics_atc,                     cdm$antidepressants_atc,                          
   cdm$ccb_atc,                                cdm$antiemetics_atc,                     
   cdm$antiepileptics_atc,                     cdm$propulsives_atc,                    
-  cdm$antiarrhythmics_atc,                    cdm$antihypentensives_atc,   
+  cdm$antiarrhythmics_atc,                    cdm$antihypentensives_atc,  
+  cdm$typical_antipsychotics_class,           cdm$atypical_antipsychotics_class,
   name = "class_hypothesis"
 )
 
