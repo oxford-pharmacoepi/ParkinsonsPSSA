@@ -13,6 +13,11 @@ amiodarone_levothyroxine_positive_control <- CohortSymmetry::summariseSequenceRa
 controls <- rbind(amiodarone_allopurinol_negative_control, amiodarone_levothyroxine_positive_control) |>
   omopgenerics::newSummarisedResult()
 
+controls <- controls |>
+  dplyr::mutate(across(everything(), gsub, pattern = "amiodarone", replacement = "Amiodarone"),
+                across(everything(), gsub, pattern = "levothyroxine", replacement = "Levothyroxine"),
+                across(everything(), gsub, pattern = "allopurinol", replacement = "Allopurinol"))
+
 control_forest_plot <- plotSequenceRatios(result = controls,
                        onlyaSR = T,
                        colours = "black",
@@ -42,8 +47,8 @@ freq_hypo <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$freq_hypo,
 shin <- rbind(infreq_hypo, freq_hypo) |>
   omopgenerics::newSummarisedResult()
 
-res <- rbind(class_hypo) |>
-  omopgenerics::newSummarisedResult()
+res <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo,
+                                               minCellCount = minimum_counts)
 
 plotASRForestPlot <- function(result,
                               title, 
@@ -111,14 +116,56 @@ plotASRForestPlot <- function(result,
                    legend.title=element_blank(),
                    plot.caption = element_text(hjust = 1, size=20, vjust = 0.0000000001))
   return(sr_forest_plot)
-  }
+}
+
+res <- res |>
+  dplyr::mutate(across(everything(), gsub, pattern = "amantadine", replacement = "Amantadine"),
+                across(everything(), gsub, pattern = "dopamine_agonists", replacement = "Dopamine Agonists"),
+                across(everything(), gsub, pattern = "levodopa", replacement = "Levodopa"),
+                across(everything(), gsub, pattern = "levodopa_decarboxylase_inhibitor_and_comt_inhibitor_oral", replacement = "COMT Inhibitors"),
+                across(everything(), gsub, pattern = "monoamine_oxidase_b_inhibitors", replacement = "MAO-B Inhibitors"),
+                across(everything(), gsub, pattern = "antidepressants", replacement = "Antidepressants"),
+                across(everything(), gsub, pattern = "antiemetics_and_antinauseants", replacement = "Antiemetics"),
+                across(everything(), gsub, pattern = "antiepileptics", replacement = "Antiepileptics"),
+                across(everything(), gsub, pattern = "atypical_antipsychotics", replacement = "Atypical Antipsychotics"),
+                across(everything(), gsub, pattern = "calcium_channel_blockers", replacement = "Calcium Channel Blockers"),
+                across(everything(), gsub, pattern = "typical_antipsychotics", replacement = "Typical Antipsychotics")
+  )
 
 sr_forest_plot <- plotASRForestPlot(result = res, 
                                     title = "Figure 2: ASRs on Top 10 Most Observed Pairs Between Class-level Index Drugs and Marker Drugs")
-SRPlotName <- paste0("SRPlotsIngredient", ".png")
+SRPlotName <- paste0("SRPlotsClass", ".png")
 png(here(output_folder, SRPlotName), width = 18, height = 8, units = "in", res = 1000)
 print(sr_forest_plot, newpage = FALSE)
 dev.off()
+
+shin <- shin |>
+  dplyr::mutate(across(everything(), gsub, pattern = "amantadine", replacement = "Amantadine"),
+                across(everything(), gsub, pattern = "dopamine_agonists", replacement = "Dopamine Agonists"),
+                across(everything(), gsub, pattern = "levodopa", replacement = "Levodopa"),
+                across(everything(), gsub, pattern = "levodopa_decarboxylase_inhibitor_and_comt_inhibitor_oral", replacement = "COMT Inhibitors"),
+                across(everything(), gsub, pattern = "monoamine_oxidase_b_inhibitors", replacement = "MAO-B Inhibitors"),
+                across(everything(), gsub, pattern = "citalopram", replacement = "Citalopram"),
+                across(everything(), gsub, pattern = "clozapine", replacement = "Clozapine"),
+                across(everything(), gsub, pattern = "domperidone", replacement = "Domperidone"),
+                across(everything(), gsub, pattern = "fluoxetine", replacement = "Fluoxetine"),
+                across(everything(), gsub, pattern = "phenytoin", replacement = "Phenytoin"),
+                across(everything(), gsub, pattern = "quetiapine", replacement = "Quetiapine"),
+                across(everything(), gsub, pattern = "sertraline", replacement = "Sertraline"),
+                across(everything(), gsub, pattern = "valproate", replacement = "Valproate"),
+                across(everything(), gsub, pattern = "aripiprazole", replacement = "Aripiprazole"),
+                across(everything(), gsub, pattern = "chlorpromazine", replacement = "Chlorpromazine"),
+                across(everything(), gsub, pattern = "cinnarizine", replacement = "Cinnarizine"),
+                across(everything(), gsub, pattern = "haloperidol", replacement = "Haloperidol"),
+                across(everything(), gsub, pattern = "metoclopramide", replacement = "Metoclopramide"),
+                across(everything(), gsub, pattern = "olanzapine", replacement = "Olanzapine"),
+                across(everything(), gsub, pattern = "perphenazine", replacement = "Perphenazine"),
+                across(everything(), gsub, pattern = "prochlorperazine", replacement = "Prochlorperazine"),
+                across(everything(), gsub, pattern = "promethazine", replacement = "Promethazine"),
+                across(everything(), gsub, pattern = "risperidone", replacement = "Risperidone"),
+                across(everything(), gsub, pattern = "sulpiride", replacement = "Sulpiride"),
+                across(everything(), gsub, pattern = "tetrabenazine", replacement = "Tetrabenazine")
+                )
 
 sr_forest_plot <- plotASRForestPlot(result = shin, 
                                     title = "Figure 3: ASRs on Top 10 Most Observed Pairs Between Ingredient-level Index Drugs and Marker Drugs")
