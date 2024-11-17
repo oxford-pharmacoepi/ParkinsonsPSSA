@@ -1,5 +1,8 @@
-renv::activate() 
+# ADD NECESSARY PACKAGES
+#install.packages("renv") # if not already installed, install renv from CRAN
+# renv::activate() 
 renv::restore() # this should prompt you to install the various packages required for the study
+
 library(CDMConnector)
 library(DBI)
 library(plyr)
@@ -12,7 +15,7 @@ library(CodelistGenerator)
 library(DrugUtilisation)
 library(ggplot2)
 library(xlsx)
-library(CohortSymmetry) #devtools::install_github("oxford-pharmacoepi/CohortSymmetry")
+library(CohortSymmetry) 
 
 # database metadata and connection details -----
 # The name/ acronym for the database
