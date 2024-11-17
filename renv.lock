@@ -93,14 +93,9 @@
     },
     "CohortSymmetry": {
       "Package": "CohortSymmetry",
-      "Version": "0.1.2",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "CohortSymmetry",
-      "RemoteUsername": "oxford-pharmacoepi",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "12f6bc7cf00b06fb764a1ba055e02484ed586dfc",
+      "Version": "0.1.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "CDMConnector",
         "CodelistGenerator",
@@ -109,10 +104,8 @@
         "dplyr",
         "duckdb",
         "flextable",
-        "ggplot2",
         "gt",
         "here",
-        "magrittr",
         "omock",
         "omopgenerics",
         "rlang",
@@ -122,7 +115,7 @@
         "tidyr",
         "visOmopResults"
       ],
-      "Hash": "33af751d133fd92e65a9d1caa74a5f70"
+      "Hash": "a30df41c93bc9d07679fd7bdd043b8ba"
     },
     "DBI": {
       "Package": "DBI",
@@ -244,25 +237,6 @@
         "methods"
       ],
       "Hash": "2f89abc0f88c647d3386c672632f4baf"
-    },
-    "RPostgres": {
-      "Package": "RPostgres",
-      "Version": "1.4.6",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "DBI",
-        "R",
-        "bit64",
-        "blob",
-        "cpp11",
-        "hms",
-        "lubridate",
-        "methods",
-        "plogr",
-        "withr"
-      ],
-      "Hash": "a3ccabc3de4657c14185c91f3e6d4b60"
     },
     "Rcpp": {
       "Package": "Rcpp",
@@ -1198,7 +1172,7 @@
     },
     "omock": {
       "Package": "omock",
-      "Version": "0.2.0",
+      "Version": "0.3.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1213,11 +1187,11 @@
         "snakecase",
         "stats"
       ],
-      "Hash": "d72c74056bd0b1399f4a576506eafe54"
+      "Hash": "64ed55d3f5d88e51e2ce8163473a6743"
     },
     "omopgenerics": {
       "Package": "omopgenerics",
-      "Version": "0.2.3",
+      "Version": "0.3.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1226,13 +1200,16 @@
         "dbplyr",
         "dplyr",
         "glue",
+        "lifecycle",
         "methods",
+        "purrr",
         "rlang",
         "snakecase",
         "stringr",
-        "tidyr"
+        "tidyr",
+        "vctrs"
       ],
-      "Hash": "455369900c393d3eb843fcbd056e1a9c"
+      "Hash": "c17db6329c631b9010951ad112341ba3"
     },
     "openssl": {
       "Package": "openssl",
@@ -1270,13 +1247,6 @@
         "utils"
       ],
       "Hash": "01f28d4278f15c76cddbea05899c5d6f"
-    },
-    "plogr": {
-      "Package": "plogr",
-      "Version": "0.2.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "09eb987710984fc2905c7129c7d85e65"
     },
     "plyr": {
       "Package": "plyr",
@@ -1820,14 +1790,9 @@
     },
     "visOmopResults": {
       "Package": "visOmopResults",
-      "Version": "0.3.0",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "darwin-eu",
-      "RemoteRepo": "visOmopResults",
-      "RemoteRef": "main",
-      "RemoteSha": "89e0f9c9ae68fb5d676784d7b37511f1ebe06726",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "cli",
         "dplyr",
@@ -1835,11 +1800,12 @@
         "glue",
         "lifecycle",
         "omopgenerics",
+        "purrr",
         "rlang",
         "stringr",
         "tidyr"
       ],
-      "Hash": "ceaeaa638cd38d24d486990b46e50379"
+      "Hash": "6c41fbd15141fb7d729ee868b4a2ce99"
     },
     "vroom": {
       "Package": "vroom",
