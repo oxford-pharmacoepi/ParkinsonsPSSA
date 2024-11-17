@@ -54,9 +54,6 @@ results_database_schema <- "...."
 # Whether or not to run negative/positive control (T/F)
 run_controls <- TRUE
 
-# Whether or not to run treatment orders (T/F)
-run_treatment_order <- FALSE
-
 #Whether or not to run hypothesis driven (using hypotheses found using previous research)
 run_hypothesis_driven <- TRUE
 
