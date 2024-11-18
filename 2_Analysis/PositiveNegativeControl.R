@@ -48,9 +48,7 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "amiodarone",
                                                  markerTable = "levothyroxine",
                                                  name = "amiodarone_thyroxine",
-                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")),
-                                                 daysPriorObservation = 365,
-                                                 washoutWindow = 365)
+                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine,
                                         minCellCount = minimum_counts) |>
@@ -77,9 +75,7 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "levothyroxine",
                                                  markerTable = "allopurinol",
                                                  name = "thyroxine_allopurinol",
-                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")),
-                                                 daysPriorObservation = 365,
-                                                 washoutWindow = 365)
+                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol,
                                         minCellCount = minimum_counts) |>
@@ -106,9 +102,7 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  indexTable = "amiodarone",
                                                  markerTable = "allopurinol",
                                                  name = "amiodarone_allopurinol",
-                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")),
-                                                 daysPriorObservation = 365,
-                                                 washoutWindow = 365)
+                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol,
                                         minCellCount = minimum_counts) |>
@@ -129,3 +123,12 @@ CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol,
   CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
                                     colours = "black") %>% 
   ggsave(filename = here(controls_plots_subfolder, "amiodarone_allopurinol_negative_control_sr.png"), width = 8, height = 6)
+
+controls_result <- omopgenerics::bind(
+  CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol,
+                                          minCellCount = minimum_counts),
+  CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine,
+                                          minCellCount = minimum_counts),
+  CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol,
+                                          minCellCount = minimum_counts)
+)
