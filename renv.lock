@@ -42,7 +42,7 @@
     },
     "CodelistGenerator": {
       "Package": "CodelistGenerator",
-      "Version": "3.1.0",
+      "Version": "3.3.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -54,7 +54,6 @@
         "cli",
         "dplyr",
         "glue",
-        "lifecycle",
         "lubridate",
         "magrittr",
         "omopgenerics",
@@ -66,11 +65,11 @@
         "vctrs",
         "visOmopResults"
       ],
-      "Hash": "28c43c5c246965bd64a85065a43f3d53"
+      "Hash": "94aa3db87e8df6bade83694de1139af8"
     },
     "CohortConstructor": {
       "Package": "CohortConstructor",
-      "Version": "0.2.1",
+      "Version": "0.3.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -79,6 +78,7 @@
         "R",
         "checkmate",
         "cli",
+        "clock",
         "dbplyr",
         "dplyr",
         "glue",
@@ -89,7 +89,7 @@
         "tidyr",
         "utils"
       ],
-      "Hash": "ea8f7def13356c92b60b7d68d1a4a71b"
+      "Hash": "4829dc9e17a7ebda874d6d64e8cb32aa"
     },
     "CohortSymmetry": {
       "Package": "CohortSymmetry",
@@ -130,7 +130,7 @@
     },
     "DrugUtilisation": {
       "Package": "DrugUtilisation",
-      "Version": "0.7.0",
+      "Version": "0.7.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -152,7 +152,7 @@
         "tidyr",
         "visOmopResults"
       ],
-      "Hash": "932024da1331ee8b9f45396c6df5931c"
+      "Hash": "38ed0e5274c5d81fa6d965c3cdae15db"
     },
     "MASS": {
       "Package": "MASS",
@@ -188,13 +188,12 @@
     },
     "PatientProfiles": {
       "Package": "PatientProfiles",
-      "Version": "1.1.1",
+      "Version": "1.2.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "CDMConnector",
         "R",
-        "checkmate",
         "cli",
         "dplyr",
         "lifecycle",
@@ -206,7 +205,7 @@
         "tidyr",
         "visOmopResults"
       ],
-      "Hash": "b9a11a277ef3b480b3887b143d12b66c"
+      "Hash": "bf97970a94e0d39281f3744c15785892"
     },
     "R6": {
       "Package": "R6",
@@ -237,6 +236,25 @@
         "methods"
       ],
       "Hash": "2f89abc0f88c647d3386c672632f4baf"
+    },
+    "RPostgres": {
+      "Package": "RPostgres",
+      "Version": "1.4.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "DBI",
+        "R",
+        "bit64",
+        "blob",
+        "cpp11",
+        "hms",
+        "lubridate",
+        "methods",
+        "plogr",
+        "withr"
+      ],
+      "Hash": "a3ccabc3de4657c14185c91f3e6d4b60"
     },
     "Rcpp": {
       "Package": "Rcpp",
@@ -1191,9 +1209,15 @@
     },
     "omopgenerics": {
       "Package": "omopgenerics",
-      "Version": "0.3.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Version": "0.3.1.900",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "omopgenerics",
+      "RemoteUsername": "darwin-eu",
+      "RemotePkgRef": "darwin-eu/omopgenerics",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "e7e110cd84bb5748f0f64aa15e2f4b3c38f58cb7",
       "Requirements": [
         "R",
         "cli",
@@ -1209,7 +1233,7 @@
         "tidyr",
         "vctrs"
       ],
-      "Hash": "c17db6329c631b9010951ad112341ba3"
+      "Hash": "ffe69d273b20d128b4c4712c1409007d"
     },
     "openssl": {
       "Package": "openssl",
@@ -1247,6 +1271,13 @@
         "utils"
       ],
       "Hash": "01f28d4278f15c76cddbea05899c5d6f"
+    },
+    "plogr": {
+      "Package": "plogr",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "09eb987710984fc2905c7129c7d85e65"
     },
     "plyr": {
       "Package": "plyr",
