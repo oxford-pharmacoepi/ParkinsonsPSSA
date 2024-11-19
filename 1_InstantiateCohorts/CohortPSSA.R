@@ -1,16 +1,15 @@
 ###### Parkinsonism subtypes
 print(paste0("Instantiating Parkinsonism subtypes cohorts at ", Sys.time()))
-outcome_cohorts_subtypes <- readCohortSet(here(
-  "ParkinsonsPSSA",
-  "1_InstantiateCohorts",
-  "CohortPSSA"
-))
-
-cdm <- generateCohortSet(cdm = cdm, 
-                         cohortSet = outcome_cohorts_subtypes,
-                         name = "parkinson_subtypes", 
-                         overwrite = TRUE
+outcome_cohorts_subtypes <- CodelistGenerator::codesFromCohort(
+  cdm = cdm,
+  here::here("1_InstantiateCohorts", "CohortPSSA")
 )
+
+cdm$parkinson_subtypes <- cdm |>
+  CohortConstructor::conceptCohort(
+    conceptSet = outcome_cohorts_subtypes,
+    name = "parkinson_subtypes"
+  )
 
 print(paste0("Instantiating antiparkinsonian drug cohorts at ", Sys.time()))
 # Levodopa
