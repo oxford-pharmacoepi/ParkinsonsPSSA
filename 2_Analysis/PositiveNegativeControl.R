@@ -132,3 +132,5 @@ controls_result <- omopgenerics::bind(
   CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol,
                                           minCellCount = minimum_counts)
 )
+
+saveRDS(controls_result, here::here(controls_subfolder, "controls_result.rds"))
