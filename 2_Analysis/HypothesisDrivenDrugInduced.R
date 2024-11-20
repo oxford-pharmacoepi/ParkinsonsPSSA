@@ -48,7 +48,7 @@ cdm <- CDMConnector::cdm_from_con(
                     "levothyroxine", 
                     "allopurinol", 
                     "parkinson_treatment",
-                    "class_hypothesis")
+                    "ingredient_cohort")
 )} else {
   for (i in (1:length(ingredient_level))){
     cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
