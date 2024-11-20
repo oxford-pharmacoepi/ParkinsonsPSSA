@@ -47,8 +47,8 @@ freq_hypo <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$freq_hypo,
 shin <- rbind(infreq_hypo, freq_hypo) |>
   omopgenerics::newSummarisedResult()
 
-res <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo,
-                                               minCellCount = minimum_counts)
+res_class <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo,
+                                                     minCellCount = minimum_counts)
 
 plotASRForestPlot <- function(result,
                               title, 
@@ -118,7 +118,7 @@ plotASRForestPlot <- function(result,
   return(sr_forest_plot)
 }
 
-res <- res |>
+res_class <- res_class |>
   dplyr::mutate(across(everything(), gsub, pattern = "amantadine", replacement = "Amantadine"),
                 across(everything(), gsub, pattern = "dopamine_agonists", replacement = "Dopamine Agonists"),
                 across(everything(), gsub, pattern = "levodopa", replacement = "Levodopa"),
@@ -132,8 +132,8 @@ res <- res |>
                 across(everything(), gsub, pattern = "typical_antipsychotics", replacement = "Typical Antipsychotics")
   )
 
-sr_forest_plot <- plotASRForestPlot(result = res, 
-                                    title = "Figure 2: ASRs on Top 10 Most Observed Pairs Between Class-level Index Drugs and Marker Drugs")
+sr_forest_plot <- plotASRForestPlot(result = res_class, 
+                                    title = "Figure 2: ASRs on Top 10 Most Frequently Observed Class-level Index and Marker Pairs")
 SRPlotName <- paste0("SRPlotsClass", ".png")
 png(here(output_folder, SRPlotName), width = 18, height = 8, units = "in", res = 1000)
 print(sr_forest_plot, newpage = FALSE)
@@ -143,7 +143,7 @@ shin <- shin |>
   dplyr::mutate(across(everything(), gsub, pattern = "amantadine", replacement = "Amantadine"),
                 across(everything(), gsub, pattern = "dopamine_agonists", replacement = "Dopamine Agonists"),
                 across(everything(), gsub, pattern = "levodopa", replacement = "Levodopa"),
-                across(everything(), gsub, pattern = "levodopa_decarboxylase_inhibitor_and_comt_inhibitor_oral", replacement = "COMT Inhibitors"),
+                across(everything(), gsub, pattern = "Levodopa_decarboxylase_inhibitor_and_comt_inhibitor_oral", replacement = "COMT Inhibitors"),
                 across(everything(), gsub, pattern = "monoamine_oxidase_b_inhibitors", replacement = "MAO-B Inhibitors"),
                 across(everything(), gsub, pattern = "citalopram", replacement = "Citalopram"),
                 across(everything(), gsub, pattern = "clozapine", replacement = "Clozapine"),
@@ -168,7 +168,7 @@ shin <- shin |>
                 )
 
 sr_forest_plot <- plotASRForestPlot(result = shin, 
-                                    title = "Figure 3: ASRs on Top 10 Most Observed Pairs Between Ingredient-level Index Drugs and Marker Drugs")
+                                    title = "Figure 3a: ASRs on Top 10 Most Frequently Observed Ingredient-level Index and Marker Pairs")
   SRPlotName <- paste0("SRPlotsIngredient", ".png")
   png(here(output_folder, SRPlotName), width = 18, height = 8, units = "in", res = 1000)
   print(sr_forest_plot, newpage = FALSE)
