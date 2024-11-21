@@ -107,7 +107,7 @@ if (!dir.exists(hypothesis_plots_subfolder)) {
   dir.create(hypothesis_plots_subfolder)
 }
 
-if (instantiate_index == F){
+if (hypothesis_cohort_instantiated == F){
   cdm <- CDMConnector::cdm_from_con(
     con = db,
     cdm_schema = cdm_database_schema,
@@ -116,16 +116,10 @@ if (instantiate_index == F){
                       "levothyroxine", 
                       "allopurinol", 
                       "parkinson_treatment",
-                      "antipsychotics_atc",
-                      "antidepressants_atc",
-                      "ccb_atc",
-                      "antiemetics_atc",
-                      "antiepileptics_atc",
-                      "propulsives_atc",
-                      "antiarrhythmics_atc",
-                      "antihypentensives_atc"
+                      "class_hypothesis"
     )
   )
+  
 } else {
   
 #antipsychotics
@@ -195,15 +189,32 @@ cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
 print(paste0("Generating ssri at ", Sys.time()))
 cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
                                              name = "ssri_atc",
-                                             atcName = "Selective Serotonin Reuptake Inhibitors (SSRIs)",
+                                             atcName = "Selective Serotonin Reuptake Inhibitors",
                                              level = "ATC 4th")
 
 #maoi
 print(paste0("Generating maoi at ", Sys.time()))
 cdm <- DrugUtilisation::generateAtcCohortSet(cdm = cdm,
                                              name = "maoi_atc",
-                                             atcName = "Monoamine Oxidase Inhibitors (Non-selective and selective)",
+                                             atcName = "Monoamine oxidase inhibitors, non-selective",
                                              level = "ATC 4th")
+
+print(paste0("Binding ATC class cohorts at ", Sys.time()))
+cdm <- omopgenerics::bind(
+  cdm$antipsychotics_atc,
+  cdm$antidepressants_atc,
+  cdm$ccb_atc,
+  cdm$antiemetics_atc,
+  cdm$antiepileptics_atc,
+  cdm$propulsives_atc,
+  cdm$antiarrhythmics_atc,
+  cdm$antihypentensives_atc,
+  cdm$anticholinesterases_atc,
+  cdm$ssri_atc,
+  cdm$maoi_atc,
+  name = "class_hypothesis"
+)
+
 }
 
 cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
@@ -230,3 +241,6 @@ CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo) |>
   CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
                                      colours = "black") |>
   ggsave(filename = here(hypothesis_plots_subfolder, "class_hypo_sr.png"), width = 30, height = 10)
+
+class_hypothesis <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo)
+saveRDS(class_hypothesis, here::here(hypothesis_results_subfolder, "class_hypothesis.rds"))
