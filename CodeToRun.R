@@ -17,6 +17,7 @@ library(ggplot2)
 library(xlsx)
 library(CohortSymmetry) 
 library(CohortConstructor)
+library(readxl)
 
 # database metadata and connection details -----
 # The name/ acronym for the database
