@@ -66,7 +66,7 @@ CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$amiodarone_thyroxine,
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_thyroxine,
                                         minCellCount = minimum_counts) |>
-  CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
+  CohortSymmetry::plotSequenceRatios(onlyASR = T, 
                                      colours = "black") %>% 
   ggsave(filename = here(controls_plots_subfolder, "amiodarone_levothyroxine_positive_control_sr.png"), width = 8, height = 6)
 
@@ -93,7 +93,7 @@ CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$thyroxine_allopurinol,
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$thyroxine_allopurinol,
                                         minCellCount = minimum_counts) |>
-  CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
+  CohortSymmetry::plotSequenceRatios(onlyASR = T, 
                                   colours = "black") %>% 
   ggsave(filename = here(controls_plots_subfolder, "levothyroxine_allopurinol_negative_control_sr.png"), width = 8, height = 6)
 
@@ -120,7 +120,7 @@ CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$amiodarone_allopurinol,
 
 CohortSymmetry::summariseSequenceRatios(cohort = cdm$amiodarone_allopurinol,
                                         minCellCount = minimum_counts) |>
-  CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
+  CohortSymmetry::plotSequenceRatios(onlyASR = T, 
                                     colours = "black") %>% 
   ggsave(filename = here(controls_plots_subfolder, "amiodarone_allopurinol_negative_control_sr.png"), width = 8, height = 6)
 
@@ -133,4 +133,5 @@ controls_result <- omopgenerics::bind(
                                           minCellCount = minimum_counts)
 )
 
-saveRDS(controls_result, here::here(controls_subfolder, "controls_result.rds"))
+omopgenerics::exportSummarisedResult(controls_result, 
+                                     fileName = here::here(controls_subfolder, "controls_results_{cdm_name}.csv"))

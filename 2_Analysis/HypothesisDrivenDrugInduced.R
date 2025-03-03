@@ -44,13 +44,13 @@ cdm <- CDMConnector::cdm_from_con(
   con = db,
   cdm_schema = cdm_database_schema,
   write_schema = c(schema = results_database_schema, prefix = stem_table), 
-  cohort_tables = c("amiodarone", 
-                    "levothyroxine", 
-                    "allopurinol", 
-                    "parkinson_treatment",
+  cohort_tables = c("parkinson_treatment",
                     "ingredient_cohort")
 )} else {
   for (i in (1:length(ingredient_level))){
+    ingredient_level_name <- ingredient_level
+    ingredient_level_name[ingredient_level_name == "amphotericin B"] <- "amphotericin_b"
+    
     cdm <- DrugUtilisation::generateIngredientCohortSet(cdm = cdm,
                                                         name = ingredient_level[[i]],
                                                         ingredient = ingredient_level[[i]])
@@ -65,25 +65,42 @@ cdm <- CDMConnector::cdm_from_con(
   }
 }
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$freq_hypo, 
-                                        minCellCount = minimum_counts) |>
-  write.xlsx(file = here(hypothesis_results_subfolder, "freq_hypo.xlsx"))
+cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
+                                                 indexTable = "ingredient_cohort",
+                                                 markerTable = "parkinson_treatment",
+                                                 name = "ingredient_hypo",
+                                                 cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$freq_hypo,
-                                        minCellCount = minimum_counts) |>
-  CohortSymmetry::tableSequenceRatios() |> 
-  gt::gtsave(filename = here(hypothesis_gt_subfolder, "freq_hypo.docx"))
+res <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$ingredient_hypo, 
+                                        minCellCount = minimum_counts) 
 
-CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$freq_hypo,
-                                          minCellCount = minimum_counts) |>
-  CohortSymmetry::plotTemporalSymmetry() |> 
-  ggsave(filename = here(hypothesis_plots_subfolder, "freq_hypo_temporal.png"), width = 30, height = 18)
+res_settings <- omopgenerics::settings(res)
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$freq_hypo,
-                                        minCellCount = minimum_counts) |>
-  CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
-                                    colours = "black") |>
-  ggsave(filename = here(hypothesis_plots_subfolder, "freq_hypo_sr.png"), width = 30, height = 10)
+res_count_greater_than_100 <- res |>
+  dplyr::group_by(group_level) |>
+  dplyr::filter(estimate_name == "count") |>
+  dplyr::summarise(n = sum(as.integer(estimate_value), na.rm = T)) |>
+  dplyr::filter(n>=100) |>
+  dplyr::ungroup() |>
+  dplyr::pull("group_level")
+
+res_subsetted <- res |> dplyr::filter(group_level %in% res_count_greater_than_100)
+
+res_subsetted <- res_subsetted |>
+  omopgenerics::newSummarisedResult(
+    settings = res_settings
+  )
+
+#res |> write.xlsx(file = here(hypothesis_results_subfolder, "ingredient_hypo.xlsx"))
+res_subsetted |> write.xlsx(file = here(hypothesis_results_subfolder, "ingredient_hypo.xlsx"))
+
+CohortSymmetry::tableSequenceRatios(res_subsetted) |> 
+gt::gtsave(filename = here(hypothesis_gt_subfolder, "ingredient_hypo.docx"))
+
+CohortSymmetry::plotSequenceRatios(result = res_subsetted,
+                                   onlyaSR = T, 
+                                   colours = "black") |>
+ggsave(filename = here(hypothesis_plots_subfolder, "ingredient_hypo_sr.png"), width = 30, height = 10)
 
 ################################################################################
 print("Running PSSA on class level")

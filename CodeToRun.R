@@ -75,11 +75,11 @@ stem_table <- "...."
 minimum_counts <- 5
 
 # create cdm reference ----
-cdm <- CDMConnector::cdm_from_con(
+cdm <- CDMConnector::cdmFromCon(
   con = db,
-  cdm_schema = cdm_database_schema,
-  write_schema = c(schema = results_database_schema,
-                   prefix = stem_table)
+  cdmSchema  = cdm_database_schema,
+  writeSchema = results_database_schema,
+  writePrefix = stem_table
 )
 # check database connection
 # running the next line should give you a count of your person table
