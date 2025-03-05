@@ -133,5 +133,11 @@ controls_result <- omopgenerics::bind(
                                           minCellCount = minimum_counts)
 )
 
+setting <- omopgenerics::settings(controls_result) |>
+  dplyr::mutate(additional = "controls")
+
+controls_result <- controls_result |>
+  omopgenerics::newSummarisedResult(settings = setting)
+
 omopgenerics::exportSummarisedResult(controls_result, 
                                      fileName = here::here(controls_subfolder, "controls_results_{cdm_name}.csv"))

@@ -74,31 +74,34 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
 res <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$ingredient_hypo, 
                                         minCellCount = minimum_counts) 
 
-res_settings <- omopgenerics::settings(res)
-
-res_count_greater_than_100 <- res |>
+res_count_greater_than_200 <- res |>
   dplyr::group_by(group_level) |>
   dplyr::filter(estimate_name == "count") |>
   dplyr::summarise(n = sum(as.integer(estimate_value), na.rm = T)) |>
-  dplyr::filter(n>=100) |>
+  dplyr::filter(n>=200) |>
   dplyr::ungroup() |>
   dplyr::pull("group_level")
 
-res_subsetted <- res |> dplyr::filter(group_level %in% res_count_greater_than_100)
-
-res_subsetted <- res_subsetted |>
-  omopgenerics::newSummarisedResult(
-    settings = res_settings
+res_subsetted <- res |> omopgenerics::filterGroup(
+  group_level %in% res_count_greater_than_200
   )
 
-#res |> write.xlsx(file = here(hypothesis_results_subfolder, "ingredient_hypo.xlsx"))
-res_subsetted |> write.xlsx(file = here(hypothesis_results_subfolder, "ingredient_hypo.xlsx"))
+setting <- omopgenerics::settings(res_subsetted) |>
+  dplyr::mutate(additional = "ingredient_level_hypotheses")
+
+res_subsetted <- res_subsetted |>
+  omopgenerics::newSummarisedResult(settings = setting)
+
+res_subsetted |> 
+  omopgenerics::exportSummarisedResult(
+    fileName = here::here(hypothesis_subfolder_ingredient_level, "result_ingredient_{cdm_name}.csv")
+  )
 
 CohortSymmetry::tableSequenceRatios(res_subsetted) |> 
 gt::gtsave(filename = here(hypothesis_gt_subfolder, "ingredient_hypo.docx"))
 
 CohortSymmetry::plotSequenceRatios(result = res_subsetted,
-                                   onlyaSR = T, 
+                                   onlyASR = T, 
                                    colours = "black") |>
 ggsave(filename = here(hypothesis_plots_subfolder, "ingredient_hypo_sr.png"), width = 30, height = 10)
 
@@ -231,7 +234,6 @@ cdm <- omopgenerics::bind(
   cdm$maoi_atc,
   name = "class_hypothesis"
 )
-
 }
 
 cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
@@ -240,24 +242,37 @@ cdm <- CohortSymmetry::generateSequenceCohortSet(cdm = cdm,
                                                  name = "class_hypo",
                                                  cohortDateRange = as.Date(c("2008-01-01", "2021-12-31")))
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo,
-                                        minCellCount = minimum_counts) |>
-  write.xlsx(file = here(hypothesis_results_subfolder, "class_hypo.xlsx"))
+result_class <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo,
+                                                        minCellCount = minimum_counts)
 
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo,
-                                        minCellCount = minimum_counts) |>
-  CohortSymmetry::tableSequenceRatios() |> 
+res_count_greater_than_200 <- result_class |>
+  dplyr::group_by(group_level) |>
+  dplyr::filter(estimate_name == "count") |>
+  dplyr::summarise(n = sum(as.integer(estimate_value), na.rm = T)) |>
+  dplyr::filter(n>=200) |>
+  dplyr::ungroup() |>
+  dplyr::pull("group_level")
+
+result_class_subsetted <- result_class |> omopgenerics::filterGroup(
+  group_level %in% res_count_greater_than_200
+)
+
+setting <- omopgenerics::settings(result_class_subsetted) |>
+  dplyr::mutate(additional = "class_level_hypotheses")
+
+result_class_subsetted <- result_class_subsetted |>
+  omopgenerics::newSummarisedResult(settings = setting)
+
+result_class_subsetted |> 
+  omopgenerics::exportSummarisedResult(
+    fileName = here::here(hypothesis_subfolder_class_level, "result_class_{cdm_name}.csv")
+  )
+
+CohortSymmetry::tableSequenceRatios(res_subsetted) |> 
   gt::gtsave(filename = here(hypothesis_gt_subfolder, "class_hypo.docx"))
 
-CohortSymmetry::summariseTemporalSymmetry(cohort = cdm$class_hypo,
-                                          minCellCount = minimum_counts) |>
-  CohortSymmetry::plotTemporalSymmetry() |> 
-  ggsave(filename = here(hypothesis_plots_subfolder, "class_hypo_temporal.png"), width = 30, height = 18)
-
-CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo) |>
-  CohortSymmetry::plotSequenceRatios(onlyaSR = T, 
-                                     colours = "black") |>
+CohortSymmetry::plotSequenceRatios(result = res_subsetted,
+                                   onlyASR = T, 
+                                   colours = "black") |>
   ggsave(filename = here(hypothesis_plots_subfolder, "class_hypo_sr.png"), width = 30, height = 10)
 
-class_hypothesis <- CohortSymmetry::summariseSequenceRatios(cohort = cdm$class_hypo)
-saveRDS(class_hypothesis, here::here(hypothesis_results_subfolder, "class_hypothesis.rds"))
