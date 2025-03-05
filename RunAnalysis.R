@@ -28,3 +28,10 @@ if (run_hypothesis_driven == T){
   info(logger, "RUNNING HYPOTHESIS DRIVEN ANALYSIS DONE")
   print(paste0("Finishing hypothesis driven analysis at ", Sys.time()))
 }
+
+overall_result <- omopgenerics::importSummarisedResult(path = output_folder,
+                                                       recursive = T)
+
+overall_result |> omopgenerics::exportSummarisedResult(
+  fileName = here::here(output_folder, "overall_result_{cdm_name}.csv")
+)
