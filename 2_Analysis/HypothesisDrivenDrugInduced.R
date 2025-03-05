@@ -105,6 +105,7 @@ CohortSymmetry::plotSequenceRatios(result = res_subsetted,
                                    colours = "black") |>
 ggsave(filename = here(hypothesis_plots_subfolder, "ingredient_hypo_sr.png"), width = 30, height = 10)
 
+results[["ingredient_level"]] <- res_subsetted
 ################################################################################
 print("Running PSSA on class level")
 hypothesis_subfolder_class_level <- here(hypothesis_subfolder, "class_level")
@@ -276,3 +277,4 @@ CohortSymmetry::plotSequenceRatios(result = res_subsetted,
                                    colours = "black") |>
   ggsave(filename = here(hypothesis_plots_subfolder, "class_hypo_sr.png"), width = 30, height = 10)
 
+results[["class_level"]] <- result_class_subsetted

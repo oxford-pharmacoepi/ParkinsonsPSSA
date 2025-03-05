@@ -4,6 +4,10 @@ logger <- create.logger()
 logfile(logger) <- log_file
 level(logger) <- "INFO"
 
+results <- list()
+results[["snapshot"]] <- OmopSketch::summariseOmopSnapshot(cdm)
+results[["obs_period"]] <- OmopSketch::summariseObservationPeriod(cdm$observation_period)
+
 # generating cohorts for PSSA
 info(logger, "GENERATING COHORTS FOR PSSA")
 print(paste0("Generating cohorts for PSSA at ", Sys.time()))
@@ -29,9 +33,12 @@ if (run_hypothesis_driven == T){
   print(paste0("Finishing hypothesis driven analysis at ", Sys.time()))
 }
 
-overall_result <- omopgenerics::importSummarisedResult(path = output_folder,
-                                                       recursive = T)
+results <- results |>
+  vctrs::list_drop_empty() |>
+  omopgenerics::bind() |>
+  omopgenerics::newSummarisedResult()
 
-overall_result |> omopgenerics::exportSummarisedResult(
-  fileName = here::here(output_folder, "overall_result_{cdm_name}.csv")
+exportSummarisedResult(results,
+                       minCellCount = minimum_counts,
+                       path = output_folder
 )

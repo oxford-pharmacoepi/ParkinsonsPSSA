@@ -141,3 +141,5 @@ controls_result <- controls_result |>
 
 omopgenerics::exportSummarisedResult(controls_result, 
                                      fileName = here::here(controls_subfolder, "controls_results_{cdm_name}.csv"))
+
+results[["controls"]] <- controls_result
