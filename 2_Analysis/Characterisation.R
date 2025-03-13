@@ -1,132 +1,104 @@
 # demographics ----
 cli::cli_alert_info("Summarising Demographics")
 
-suppressWarnings(
-  
-  summaryDemographics <- cdm$outcome %>%
-    summariseCharacteristics(
-      strata = list(c("sex"),
-                    c("age_group"),
-                    c("age_group", "sex"),
-                    c("diag_yr_gp"),
-                    c("diag_yr_gp", "sex")),
-      ageGroup = list( "18 to 49" = c(18, 49),
-                       "50 to 59" = c(50, 59),
-                       "60 to 69" = c(60, 69),
-                       "70 to 79" = c(70, 79),
-                       "80 +" = c(80, 150)),
-      tableIntersect = list()
-    )
-  
+cdm <- omopgenerics::bind(
+  cdm$amiodarone_allopurinol,
+  cdm$amiodarone_thyroxine,
+  cdm$thyroxine_allopurinol,
+  cdm$ingredient_hypo,
+  cdm$class_hypo,
+  name = "cohort"
 )
 
-write_csv(summaryDemographics %>%
-            omopgenerics::suppress(minCellCount = 5), here("Results",db_name, paste0(cdmName(cdm),
-                                                                                     "_summary_demographics.csv"
-            )))
-
-cli::cli_alert_success("Summarising Demographics Complete")
-
-# comorbidities --------
+# Instantiating comorbidities --------
 cli::cli_alert_info("Instantiating Comorbidities")
 
-codelistConditions <- CodelistGenerator::codesFromConceptSet(here("2_Study", "1_InstantiateCohorts", "Conditions"), cdm)
+codelistConditions <- CodelistGenerator::codesFromConceptSet(here("1_InstantiateCohorts", "Conditions"), cdm)
 
 cdm <- CDMConnector::generateConceptCohortSet(cdm = cdm, 
                                               conceptSet = codelistConditions,
                                               name = "conditions",
                                               overwrite = TRUE)
+cli::cli_alert_info("Instantiated Comorbidities")
 
+# Instantiating medications -----
+cli::cli_alert_info("Instantiating Medications")
 
-cli::cli_alert_info("Summarising Comorbidities")
-
-suppressWarnings(
-  
-  summaryComorbidity <- cdm$outcome %>%
-    summariseCharacteristics(
-      strata = list(c("sex"),
-                    c("age_group"),
-                    c("age_group", "sex"),
-                    c("diag_yr_gp"),
-                    c("diag_yr_gp", "sex")),
-      ageGroup = list( "18 to 49" = c(18, 49),
-                       "50 to 59" = c(50, 59),
-                       "60 to 69" = c(60, 69),
-                       "70 to 79" = c(70, 79),
-                       "80 +" = c(80, 150)),
-      tableIntersect = list(),
-      cohortIntersect = list("Comorbidities" = list(
-        targetCohortTable = "conditions",
-        value = "flag",
-        window = list(c(-999999, -1) ,
-                      c(-999999, -366),
-                      c(-365, -31),
-                      c(-30, -1),
-                      c(0, 0))
-      )
-      )
-    )
-  
-)
-
-
-write_csv(summaryComorbidity %>%
-            omopgenerics::suppress(minCellCount = 5), here("Results",db_name, paste0(cdmName(cdm),
-                                                                                     "_summary_comorbidity.csv"
-            )))
-
-cli::cli_alert_success("Summarising Comorbidities Complete")
-
-# medications -----
-cli::cli_alert_info("Summarising Medications")
-
-# instantiate medications
-codelistMedications <- CodelistGenerator::codesFromConceptSet(here("2_Study" ,"1_InstantiateCohorts", "Medications"), cdm)
+codelistMedications <- CodelistGenerator::codesFromConceptSet(here("1_InstantiateCohorts", "Medications"), cdm)
 
 cdm <- DrugUtilisation::generateDrugUtilisationCohortSet(cdm = cdm, 
                                                          conceptSet = codelistMedications, 
                                                          name = "medications")
 
+cli::cli_alert_info("Start summarising demographics")
 
-suppressWarnings(
-  
-  summaryMedications <- cdm$outcome %>%
-    summariseCharacteristics(
-      strata = list(c("sex"),
-                    c("age_group"),
-                    c("age_group", "sex"),
-                    c("diag_yr_gp"),
-                    c("diag_yr_gp", "sex")),
-      ageGroup = list( "18 to 49" = c(18, 49),
-                       "50 to 59" = c(50, 59),
-                       "60 to 69" = c(60, 69),
-                       "70 to 79" = c(70, 79),
-                       "80 +" = c(80, 150)),
-      tableIntersect = list(),
-      cohortIntersect = list(
-        "Medications" = list(
-          targetCohortTable = "medications",
-          value = "flag",
-          window = list(c(-365, -1),
-                        c(-365, -31),
-                        c(-30, -1),
-                        c(0, 0),
-                        c(1, 30),
-                        c(1, 90),
-                        c(1, 365))
-        ))
+cdm$cohort <- cdm$cohort |> 
+  PatientProfiles::addDemographics(
+    ageGroup = list(
+      "age_group" =
+        list(
+          "< 18" = c(0, 17),
+          "18 to 49" = c(18, 49),
+          "50 to 59" = c(50, 59),
+          "60 to 69" = c(60, 69),
+          "70 to 79" = c(70, 79),
+          "80+" = c(80, 150)
+        )
+    )) |> 
+  dplyr::mutate(index_or_marker_first = if_else(cohort_start_date == index_date, "Index", "Marker"))
+
+results[["characteristics"]] <- cdm$cohort |>
+  CohortCharacteristics::summariseCharacteristics(
+    strata = list(c("index_or_marker_first")),
+    ageGroup = list ("< 18" = c(0, 17),
+                     "18 to 49" = c(18, 49),
+                     "50 to 59" = c(50, 59),
+                     "60 to 69" = c(60, 69),
+                     "70 to 79" = c(70, 79),
+                     "80 +" = c(80, 150))
+  )
+cli::cli_alert_success("Summarising Demographics Complete")
+
+
+cli::cli_alert_info("Summarising Comorbidities")
+results[["comorbidities"]] <- cdm$cohort |>
+  CohortCharacteristics::summariseCharacteristics(
+    strata = list(c("index_or_marker_first")),
+    ageGroup = list ("< 18" = c(0, 17),
+                     "18 to 49" = c(18, 49),
+                     "50 to 59" = c(50, 59),
+                     "60 to 69" = c(60, 69),
+                     "70 to 79" = c(70, 79),
+                     "80 +" = c(80, 150)),
+    cohortIntersectFlag = list(
+      "Conditions prior to index date" = list(
+        targetCohortTable = "conditions",
+        window = c(-Inf, -1)
+      )
     )
-  
-)
+  )
+cli::cli_alert_success("Summarising Comorbidities Complete")
 
 
-
-write_csv(summaryMedications %>%
-            omopgenerics::suppress(minCellCount = 5),
-          here("Results", db_name, paste0(cdmName(cdm),
-                                          "_summary_medications.csv"
-          )))
-
+cli::cli_alert_info("Summarising Medications")
+# instantiate medications
+results[["medication"]] <- cdm$cohort |>
+  CohortCharacteristics::summariseCharacteristics(
+    strata = list(c("index_or_marker_first")),
+    ageGroup = list ("< 18" = c(0, 17),
+                     "18 to 49" = c(18, 49),
+                     "50 to 59" = c(50, 59),
+                     "60 to 69" = c(60, 69),
+                     "70 to 79" = c(70, 79),
+                     "80 +" = c(80, 150)),
+    cohortIntersectFlag = list(
+      "Medications 365 days prior to index date" = list(
+        targetCohortTable = "medications",
+        window = c(-365, -1)
+      )
+      
+    )
+  )
 cli::cli_alert_success("Summarising Medications Complete")
 
 cli::cli_alert_success("Characterisation Analysis Complete")

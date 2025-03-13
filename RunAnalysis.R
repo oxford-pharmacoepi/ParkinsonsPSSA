@@ -25,12 +25,19 @@ if (run_controls == T){
 }
 
 if (run_hypothesis_driven == T){
-  # running treatments for PD
   info(logger, "RUNNING HYPOTHESIS DRIVEN ANALYSIS")
   print(paste0("Running hypothesis driven analysis at ", Sys.time()))
   source(here("2_Analysis", "HypothesisDrivenDrugInduced.R"))
   info(logger, "RUNNING HYPOTHESIS DRIVEN ANALYSIS DONE")
   print(paste0("Finishing hypothesis driven analysis at ", Sys.time()))
+}
+
+if (run_characterisation == T){
+  info(logger, "CHARACTERISATION STARTS")
+  print(paste0("Running characterisation at ", Sys.time()))
+  source(here("2_Analysis", "Characterisation.R"))
+  info(logger, "CHARACTERISATION DONE")
+  print(paste0("Finishing characterisation at ", Sys.time()))
 }
 
 results <- results |>
