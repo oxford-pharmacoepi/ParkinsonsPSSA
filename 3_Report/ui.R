@@ -33,11 +33,6 @@ ui <- bslib::page_navbar(
     backgroundCard("background.md")
   ),
   bslib::nav_panel(
-    title = "Summary",
-    icon = shiny::icon("file-alt"),
-    summaryCard(data)
-  ),
-  bslib::nav_panel(
     title = "Snapshot",
     icon = shiny::icon("clipboard-list"),
     bslib::layout_sidebar(
@@ -310,7 +305,7 @@ ui <- bslib::page_navbar(
   ),
   bslib::nav_panel(
     title = "Sequence ratios",
-    icon = shiny::icon(""),
+    icon = shiny::icon("percent"),
     bslib::layout_sidebar(
       sidebar = bslib::sidebar(
         bslib::accordion(
