@@ -12,9 +12,7 @@ cdm <- omopgenerics::bind(
 
 # Instantiating comorbidities --------
 cli::cli_alert_info("Instantiating Comorbidities")
-
 codelistConditions <- CodelistGenerator::codesFromConceptSet(here("1_InstantiateCohorts", "Conditions"), cdm)
-
 cdm <- CDMConnector::generateConceptCohortSet(cdm = cdm, 
                                               conceptSet = codelistConditions,
                                               name = "conditions",
@@ -23,15 +21,13 @@ cli::cli_alert_info("Instantiated Comorbidities")
 
 # Instantiating medications -----
 cli::cli_alert_info("Instantiating Medications")
-
 codelistMedications <- CodelistGenerator::codesFromConceptSet(here("1_InstantiateCohorts", "Medications"), cdm)
-
 cdm <- DrugUtilisation::generateDrugUtilisationCohortSet(cdm = cdm, 
                                                          conceptSet = codelistMedications, 
                                                          name = "medications")
+cli::cli_alert_info("Instantiated Medications")
 
 cli::cli_alert_info("Start summarising demographics")
-
 cdm$cohort <- cdm$cohort |> 
   PatientProfiles::addDemographics(
     ageGroup = list(
@@ -47,21 +43,8 @@ cdm$cohort <- cdm$cohort |>
     )) |> 
   dplyr::mutate(index_or_marker_first = if_else(cohort_start_date == index_date, "Index", "Marker"))
 
+cli::cli_alert_info("Summarising Characteristics")
 results[["characteristics"]] <- cdm$cohort |>
-  CohortCharacteristics::summariseCharacteristics(
-    strata = list(c("index_or_marker_first")),
-    ageGroup = list ("< 18" = c(0, 17),
-                     "18 to 49" = c(18, 49),
-                     "50 to 59" = c(50, 59),
-                     "60 to 69" = c(60, 69),
-                     "70 to 79" = c(70, 79),
-                     "80 +" = c(80, 150))
-  )
-cli::cli_alert_success("Summarising Demographics Complete")
-
-
-cli::cli_alert_info("Summarising Comorbidities")
-results[["comorbidities"]] <- cdm$cohort |>
   CohortCharacteristics::summariseCharacteristics(
     strata = list(c("index_or_marker_first")),
     ageGroup = list ("< 18" = c(0, 17),
@@ -74,31 +57,11 @@ results[["comorbidities"]] <- cdm$cohort |>
       "Conditions prior to index date" = list(
         targetCohortTable = "conditions",
         window = c(-Inf, -1)
-      )
-    )
-  )
-cli::cli_alert_success("Summarising Comorbidities Complete")
-
-
-cli::cli_alert_info("Summarising Medications")
-# instantiate medications
-results[["medication"]] <- cdm$cohort |>
-  CohortCharacteristics::summariseCharacteristics(
-    strata = list(c("index_or_marker_first")),
-    ageGroup = list ("< 18" = c(0, 17),
-                     "18 to 49" = c(18, 49),
-                     "50 to 59" = c(50, 59),
-                     "60 to 69" = c(60, 69),
-                     "70 to 79" = c(70, 79),
-                     "80 +" = c(80, 150)),
-    cohortIntersectFlag = list(
+      ),
       "Medications 365 days prior to index date" = list(
         targetCohortTable = "medications",
         window = c(-365, -1)
       )
-      
     )
   )
-cli::cli_alert_success("Summarising Medications Complete")
-
 cli::cli_alert_success("Characterisation Analysis Complete")
