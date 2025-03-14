@@ -212,29 +212,31 @@ server <- function(input, output, session) {
         readr::write_csv(file = file)
     }
   )
-  ## output sequence_ratios -----
-  ## output 0 -----
-  createOutput0 <- shiny::reactive({
-    result <- data |>
-      filterData("sequence_ratios", input)
-    simpleTable(
+  ## output gt table cohort symmetry
+  createOutputCohortSymmetry <- shiny::reactive({
+    res <- data |>
+      filterData("sequence_ratios", input) |>
+      omopgenerics::addSettings() |>
+      omopgenerics::splitAll() |>
+      dplyr::select(!"result_id")
+    
+    CohortCharacteristics::tableCharacteristics(
       result,
-      header = input$sequence_ratios_gt_0_header,
-      group = input$sequence_ratios_gt_0_group,
-      hide = input$sequence_ratios_gt_0_hide
+      header = input$summarise_characteristics_gt_7_header,
+      groupColumn = input$summarise_characteristics_gt_7_groupColumn,
+      hide = c(input$summarise_characteristics_gt_7_hide, "table_name")
     )
   })
-  output$sequence_ratios_gt_0 <- gt::render_gt({
-    createOutput0()
+  output$summarise_characteristics_gt_7 <- gt::render_gt({
+    createOutput7()
   })
-  output$sequence_ratios_gt_0_download <- shiny::downloadHandler(
-    filename = paste0("output_gt_sequence_ratios.", input$sequence_ratios_gt_0_download_type),
+  output$summarise_characteristics_gt_7_download <- shiny::downloadHandler(
+    filename = paste0("output_gt_summarise_characteristics.", input$summarise_characteristics_gt_7_download_type),
     content = function(file) {
-      obj <- createOutput0()
+      obj <- createOutput7()
       gt::gtsave(data = obj, filename = file)
     }
   )
-
 
   # summarise_characteristics -----
   ## tidy summarise_characteristics -----
@@ -289,7 +291,7 @@ server <- function(input, output, session) {
       result,
       header = input$summarise_characteristics_gt_7_header,
       groupColumn = input$summarise_characteristics_gt_7_groupColumn,
-      hide = input$summarise_characteristics_gt_7_hide
+      hide = c(input$summarise_characteristics_gt_7_hide, "table_name")
     )
   })
   output$summarise_characteristics_gt_7 <- gt::render_gt({
