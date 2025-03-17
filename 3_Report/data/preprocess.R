@@ -38,6 +38,12 @@ result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data")) |>
       (result_id == 5) ~ stringr::str_replace(group_level, "__", " -> "),
       T ~ group_level
     )
+  ) |>
+  dplyr::mutate(
+    group_level = dplyr::case_when(
+      (result_id == 5) ~ stringr::str_replace(group_level, "([^_]+)_([^ ]+) -> ([^_]+)_([^ ]+)", "\\2 (\\1) -> \\4 (\\3)"),
+      T ~ group_level
+    )
   ) 
 
 data <- prepareResult(result, resultList)
