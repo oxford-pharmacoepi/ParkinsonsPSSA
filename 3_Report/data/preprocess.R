@@ -8,7 +8,38 @@ resultList <- list(
 
 source(file.path(getwd(), "functions.R"))
 
-result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data"))
+result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data")) |>
+  dplyr::mutate(
+    group_level = dplyr::case_when(
+      (result_id == 5) ~ stringr::str_replace(group_level, "index_", ""),
+      T ~ group_level
+    )
+  ) |>
+  dplyr::mutate(
+    group_level = dplyr::case_when(
+      (result_id == 5) ~ stringr::str_replace(group_level, "marker", ""),
+      T ~ group_level
+    )
+  ) |>
+  dplyr::mutate(
+    group_level = dplyr::case_when(
+      (result_id == 5) ~ stringr::str_replace(group_level, "levodopa_decarboxylase_inhibitor_and_comt_inhibitor_oral", "comt_inhibitors"),
+      T ~ group_level
+    )
+  ) |>
+  dplyr::mutate(
+    group_level = dplyr::case_when(
+      (result_id == 5) ~ stringr::str_replace(group_level, "monoamine_oxidase_b_inhibitors", "maob_inhibitors"),
+      T ~ group_level
+    )
+  ) |>
+  dplyr::mutate(
+    group_level = dplyr::case_when(
+      (result_id == 5) ~ stringr::str_replace(group_level, "__", " -> "),
+      T ~ group_level
+    )
+  ) 
+
 data <- prepareResult(result, resultList)
 filterValues <- defaultFilterValues(result, resultList)
 

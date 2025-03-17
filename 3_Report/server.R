@@ -175,7 +175,7 @@ server <- function(input, output, session) {
       filterData("sequence_ratios", input) |>
       omopgenerics::addSettings() |>
       omopgenerics::splitAll() |>
-      dplyr::select(!"result_id")
+      dplyr::select(!"result_id") 
 
     # columns to eliminate
     colsEliminate <- colnames(res)
